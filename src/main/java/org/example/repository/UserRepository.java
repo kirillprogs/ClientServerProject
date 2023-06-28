@@ -15,9 +15,9 @@ public class UserRepository {
     private final PreparedStatement find_user_by_name;
 
     private final static String sql_create_user =
-            "INSERT INTO users (name, password) VALUES (?, ?)";
+            "INSERT INTO users (name, role, password) VALUES (?, ?, ?)";
     private final static String sql_update_user =
-            "UPDATE users SET name=?, password=? WHERE name=?";
+            "UPDATE users SET name=?, role=?, password=? WHERE name=?";
     private final static String sql_delete_user =
             "DELETE FROM users WHERE name=?";
     private final static String sql_find_by_id =
@@ -33,7 +33,8 @@ public class UserRepository {
     public void create(User user) {
         try {
             create_user.setString(1, user.getName());
-            create_user.setString(2, user.getPassword());
+            create_user.setString(2, user.getRole());
+            create_user.setString(3, user.getPassword());
             create_user.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
@@ -52,8 +53,9 @@ public class UserRepository {
     public void update(String name, User user) {
         try {
             update_user.setString(1, user.getName());
-            update_user.setString(2, user.getPassword());
-            update_user.setString(3, name);
+            update_user.setString(2, user.getRole());
+            update_user.setString(3, user.getPassword());
+            update_user.setString(4, name);
             update_user.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
@@ -67,6 +69,7 @@ public class UserRepository {
             if (set.next())
                 return new User(
                         set.getString("name"),
+                        set.getString("role"),
                         set.getString("password")
                 );
             return null;

@@ -62,6 +62,7 @@ public class Storage {
         sql = "" +
                 "CREATE TABLE IF NOT EXISTS users (" +
                 "    name VARCHAR PRIMARY KEY NOT NULL," +
+                "    role VARCHAR NULL," +
                 "    password VARCHAR NOT NULL" +
                 ")";
         statement.execute(sql);
