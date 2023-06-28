@@ -4,11 +4,10 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="211a6c5a-3d83-44ef-9f54-6930f0e3dc0a" name="Changes" comment="UserRepository and tests added">
+    <list default="true" id="211a6c5a-3d83-44ef-9f54-6930f0e3dc0a" name="Changes" comment="id removed from User entity">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/database/Storage.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/database/Storage.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/controller/GroupController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/controller/GroupController.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/org/example/entity/User.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/entity/User.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/repository/UserRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/repository/UserRepository.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -128,13 +127,21 @@
       <option name="project" value="LOCAL" />
       <updated>1687942465498</updated>
     </task>
-    <option name="localTasksCounter" value="4" />
+    <task id="LOCAL-00004" summary="id removed from User entity">
+      <created>1687947974233</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1687947974233</updated>
+    </task>
+    <option name="localTasksCounter" value="5" />
     <servers />
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="Initial commit" />
     <MESSAGE value="Dependencies and directory structure" />
     <MESSAGE value="UserRepository and tests added" />
-    <option name="LAST_COMMIT_MESSAGE" value="UserRepository and tests added" />
+    <MESSAGE value="id removed from User entity" />
+    <option name="LAST_COMMIT_MESSAGE" value="id removed from User entity" />
   </component>
 </project>
