@@ -1,14 +1,13 @@
 package org.example.entity;
 
-import lombok.Getter;
-import lombok.Setter;
-import lombok.EqualsAndHashCode;
-import lombok.ToString;
+import lombok.*;
+import org.json.JSONObject;
 
 @Getter
 @Setter
 @ToString
 @EqualsAndHashCode
+@AllArgsConstructor
 public class Group {
 
     private int id;
@@ -16,16 +15,17 @@ public class Group {
     private String description;
 
     public Group(String name) {
-        this(0, name);
+        this(name, "");
     }
 
-    public Group(int id, String name) {
-        this(id, name, "");
+    public Group(String name, String description) {
+        this(0, name, description);
     }
 
-    public Group(int id, String name, String description) {
-        this.id = id;
-        this.name = name;
-        this.description = description;
+    public JSONObject toJSON() {
+        return new JSONObject()
+                .put("id", id)
+                .put("name", name)
+                .put("description", description);
     }
 }

@@ -38,7 +38,9 @@ public class Storage {
 
     private void create_database() throws SQLException {
         Statement statement = connection.createStatement();
-        String sql = "" +
+        String sql = "PRAGMA foreign_keys=ON";
+        statement.execute(sql);
+        sql = "" +
                 "CREATE TABLE IF NOT EXISTS groups (" +
                 "    id INTEGER PRIMARY KEY AUTOINCREMENT," +
                 "    name VARCHAR NOT NULL," +

@@ -1,14 +1,17 @@
 package org.example.entity;
 
+import lombok.AllArgsConstructor;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
-import lombok.EqualsAndHashCode;
 import lombok.ToString;
+import org.json.JSONObject;
 
 @Getter
 @Setter
 @ToString
 @EqualsAndHashCode
+@AllArgsConstructor
 public class Product {
 
     private int id;
@@ -18,20 +21,21 @@ public class Product {
     private double amount;
     private double price;
 
-    public Product(String name, double amount, double price) {
-        this(name, "", amount, price);
+    public Product(String name, int group_id, double amount, double price) {
+        this(name, group_id, "", amount, price);
     }
 
-    public Product(String name, String description, double amount, double price) {
-        this(0, 0, name, description, amount, price);
+    public Product(String name, int group_id, String description, double amount, double price) {
+        this(0, group_id, name, description, amount, price);
     }
 
-    public Product(int id, int group_id, String name, String description, double amount, double price) {
-        this.id = id;
-        this.group_id = group_id;
-        this.name = name;
-        this.description = description;
-        this.amount = amount;
-        this.price = price;
+    public JSONObject toJSON() {
+        return new JSONObject()
+                .put("id", id)
+                .put("group_id", group_id)
+                .put("name", name)
+                .put("description", description)
+                .put("amount", amount)
+                .put("price", price);
     }
 }
