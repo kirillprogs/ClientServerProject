@@ -31,7 +31,7 @@ public class ProductRepository {
         find_product_by_id = connection.prepareStatement(sql_find_by_id);
     }
 
-    public void create_product(Product product) {
+    public void create(Product product) {
         try {
             create_product.setInt(1, product.getGroup_id());
             create_product.setString(2, product.getName());
@@ -44,7 +44,7 @@ public class ProductRepository {
         }
     }
 
-    public void delete_product(int id) {
+    public void delete(int id) {
         try {
             delete_product.setInt(1, id);
             delete_product.executeUpdate();
@@ -53,7 +53,7 @@ public class ProductRepository {
         }
     }
 
-    public void update_product(int id, Product product) {
+    public void update(int id, Product product) {
         try {
             update_product.setInt(1, product.getGroup_id());
             update_product.setString(2, product.getName());
@@ -67,7 +67,7 @@ public class ProductRepository {
         }
     }
 
-    public Product find_product_by_id(int id) {
+    public Product find_by_id(int id) {
         try {
             find_product_by_id.setInt(1, id);
             ResultSet set = find_product_by_id.executeQuery();
