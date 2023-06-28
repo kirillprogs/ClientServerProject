@@ -41,14 +41,27 @@ public class Server {
         server.createContext("/api/group/", new GroupHandler())
                 .setAuthenticator(new ServerAuthenticator());
 
+        server.createContext("/api/group/all/", new AllGroupHandler())
+                .setAuthenticator(new ServerAuthenticator());
+
+        server.createContext("/api/goods/all/", new AllProductHandler())
+                .setAuthenticator(new ServerAuthenticator());
+
         server.setExecutor(null);
         server.start();
     }
 
-    private static class RootHandler implements HttpHandler {
+    private class AllGroupHandler implements HttpHandler {
         @Override
         public void handle(HttpExchange exchange) {
-            sendResponse(exchange, 404, NO_SUCH_PAGE);
+            groupController.getAll(exchange);
+        }
+    }
+
+    private class AllProductHandler implements HttpHandler {
+        @Override
+        public void handle(HttpExchange exchange) {
+            productController.getAll(exchange);
         }
     }
 
@@ -167,6 +180,13 @@ public class Server {
             exchange.sendResponseHeaders(statusCode, 0);
         } catch (IOException e) {
             e.printStackTrace();
+        }
+    }
+
+    private static class RootHandler implements HttpHandler {
+        @Override
+        public void handle(HttpExchange exchange) {
+            sendResponse(exchange, 404, NO_SUCH_PAGE);
         }
     }
 }

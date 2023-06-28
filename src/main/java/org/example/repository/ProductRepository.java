@@ -99,7 +99,7 @@ public class ProductRepository {
                 sql.append(" AND description LIKE '").append(description_pattern).append("'");
 
             if (group_ids != null && !group_ids.isEmpty()) {
-                sql.append(" AND group_id IN (");
+                sql.append(" AND group_name IN (");
                 for (String group_id : group_ids)
                     sql.append("'").append(group_id).append("'").append(",");
                 sql.deleteCharAt(sql.length() - 1);

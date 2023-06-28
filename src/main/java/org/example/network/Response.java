@@ -9,7 +9,5 @@ public class Response {
     public static final String URL_PARAMETERS_INCORRECT = "Incorrect URL parameters";
     public static final String INCORRECT_DATA_REQUESTED = "Incorrect data requested from database";
     public static final String NO_SUCH_PAGE = "No such page";
-    public static final String REFERENCE_FAILED = "Reference constraints failed";
-    public static final String UNIQUE_FAILED = "Unique constraints failed";
-    public static final String BOUNDS_FAILED = "Values out of required bounds";
+    public static final String SQL_ERROR = "SQL error occurred";
 }

@@ -9,6 +9,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.util.LinkedList;
+import java.util.List;
 
 public class ProductController {
 
@@ -108,5 +110,30 @@ public class ProductController {
             repository.delete(name);
             Server.sendResponse(exchange, 204);
         }
+    }
+
+    public void getAll(HttpExchange exchange) {
+        String path = exchange.getRequestURI().getPath();
+        String[] array = path.split("/");
+        if (array.length > 5) {
+            Server.sendResponse(exchange, 400, Response.URL_PARAMETERS_INCORRECT);
+            return;
+        }
+        List<Product> list = null;
+        if (array.length == 4) {
+            list = repository.list_by_criteria(null, "%", "%",
+                    -1, -1, -1, -1);
+        } else if (array.length == 5) {
+            List<String> ids = new LinkedList<>();
+            ids.add(array[4]);
+            list = repository.list_by_criteria(ids, "%", "%",
+                    -1, -1, -1, -1);
+        }
+        if (list == null) {
+            Server.sendResponse(exchange, 501, Response.SQL_ERROR);
+            return;
+        }
+        exchange.getResponseHeaders().add("Content-Type", "application/json");
+        Server.sendResponse(exchange, 200, ControllerUtilities.productListToJSON(list).toString());
     }
 }
