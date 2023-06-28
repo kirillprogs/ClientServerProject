@@ -7,19 +7,18 @@ import org.example.controller.StoreController;
 import org.example.repository.GroupRepository;
 import org.example.repository.ProductRepository;
 import org.example.repository.StoreRepository;
+import org.example.repository.UserRepository;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
 
 @Getter
 public class Storage {
 
     private final Connection connection;
-    private final StoreController storeController;
+    //    private final StoreController storeController;
     private final GroupController groupController;
     private final ProductController productController;
+    private final UserRepository userRepository;
 
     public Storage() throws ClassNotFoundException, SQLException {
         Class.forName("org.sqlite.JDBC");
@@ -28,10 +27,11 @@ public class Storage {
 //        connection = DriverManager.getConnection("jdbc:postgresql://localhost:5432/store",
 //                "user", "password");
         create_database();
-        StoreRepository storeRepository = new StoreRepository(connection);
+//        StoreRepository storeRepository = new StoreRepository(connection);
         GroupRepository groupRepository = new GroupRepository(connection);
         ProductRepository productRepository = new ProductRepository(connection);
-        storeController = new StoreController(storeRepository);
+        this.userRepository = new UserRepository(connection);
+//        storeController = new StoreController(storeRepository);
         groupController = new GroupController(groupRepository);
         productController = new ProductController(productRepository);
     }
@@ -57,6 +57,12 @@ public class Storage {
                 "    FOREIGN KEY (group_id) REFERENCES groups (id)" +
                 "        ON UPDATE CASCADE ON DELETE CASCADE," +
                 "    UNIQUE (name)" +
+                ")";
+        statement.execute(sql);
+        sql = "" +
+                "CREATE TABLE IF NOT EXISTS users (" +
+                "    name VARCHAR PRIMARY KEY NOT NULL," +
+                "    password VARCHAR NOT NULL" +
                 ")";
         statement.execute(sql);
         statement.close();
