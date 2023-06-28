@@ -14,26 +14,20 @@ import org.json.JSONObject;
 @AllArgsConstructor
 public class Product {
 
-    private int id;
-    private int group_id;
     private String name;
+    private String group_name;
     private String description;
     private double amount;
     private double price;
 
-    public Product(String name, int group_id, double amount, double price) {
-        this(name, group_id, "", amount, price);
-    }
-
-    public Product(String name, int group_id, String description, double amount, double price) {
-        this(0, group_id, name, description, amount, price);
+    public Product(String name, String group_name, double amount, double price) {
+        this(name, group_name, "", amount, price);
     }
 
     public JSONObject toJSON() {
         return new JSONObject()
-                .put("id", id)
-                .put("group_id", group_id)
                 .put("name", name)
+                .put("group_name", group_name)
                 .put("description", description)
                 .put("amount", amount)
                 .put("price", price);

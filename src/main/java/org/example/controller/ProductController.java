@@ -12,7 +12,7 @@ import java.io.IOException;
 
 public class ProductController {
 
-    private ProductRepository repository;
+    private final ProductRepository repository;
 
     public ProductController(ProductRepository repository) {
         this.repository = repository;
@@ -25,15 +25,13 @@ public class ProductController {
             Server.sendResponse(exchange, 400, Response.URL_PARAMETERS_INCORRECT);
             return;
         }
-        try {
-            int id = Integer.parseInt(array[3]);
-            Product product = repository.find_by_id(id);
-            if (product == null)
-                Server.sendResponse(exchange, 404, Response.INCORRECT_DATA_REQUESTED);
-            else
-                Server.sendResponse(exchange, 200, product.toJSON().toString());
-        } catch (NumberFormatException e) {
-            Server.sendResponse(exchange, 400, Response.URL_PARAMETERS_INCORRECT);
+        String name = array[3];
+        Product product = repository.find_by_name(name);
+        if (product == null)
+            Server.sendResponse(exchange, 404, Response.INCORRECT_DATA_REQUESTED);
+        else {
+            exchange.getResponseHeaders().add("Content-Type", "application/json");
+            Server.sendResponse(exchange, 200, product.toJSON().toString());
         }
     }
 
@@ -48,9 +46,8 @@ public class ProductController {
             byte[] bytes = exchange.getRequestBody().readAllBytes();
             JSONObject object = new JSONObject(new String(bytes));
             Product product = new Product(
-                    object.getInt("id"),
-                    object.getInt("group_id"),
                     object.getString("name"),
+                    object.getString("group_name"),
                     object.getString("description"),
                     object.getDouble("amount"),
                     object.getDouble("price")
@@ -72,18 +69,17 @@ public class ProductController {
             return;
         }
         try {
-            int id = Integer.parseInt(array[3]);
-            Product found = repository.find_by_id(id);
+            String id = array[3];
+            Product found = repository.find_by_name(id);
             if (found == null) {
-                Server.sendResponse(exchange, 404, "No product with this id");
+                Server.sendResponse(exchange, 404, "No product with this name");
                 return;
             }
             byte[] bytes = exchange.getRequestBody().readAllBytes();
             JSONObject object = new JSONObject(new String(bytes));
             Product product = new Product(
-                    object.getInt("id"),
-                    object.getInt("group_id"),
                     object.getString("name"),
+                    object.getString("group_name"),
                     object.getString("description"),
                     object.getDouble("amount"),
                     object.getDouble("price")
@@ -92,8 +88,6 @@ public class ProductController {
             Server.sendResponse(exchange, 204);
         } catch (JSONException e) {
             Server.sendResponse(exchange, 501, Response.JSON_FORMAT_ERROR);
-        } catch (NumberFormatException e) {
-            Server.sendResponse(exchange, 400, Response.URL_PARAMETERS_INCORRECT);
         } catch (IOException e) {
             Server.sendResponse(exchange, 501, Response.READ_WRITE_ERROR);
         }
@@ -106,17 +100,13 @@ public class ProductController {
             Server.sendResponse(exchange, 400, Response.URL_PARAMETERS_INCORRECT);
             return;
         }
-        try {
-            int id = Integer.parseInt(array[3]);
-            Product product = repository.find_by_id(id);
-            if (product == null)
-                Server.sendResponse(exchange, 404, Response.INCORRECT_DATA_REQUESTED);
-            else {
-                repository.delete(id);
-                Server.sendResponse(exchange, 204);
-            }
-        } catch (NumberFormatException e) {
-            Server.sendResponse(exchange, 400, Response.URL_PARAMETERS_INCORRECT);
+        String name = array[3];
+        Product product = repository.find_by_name(name);
+        if (product == null)
+            Server.sendResponse(exchange, 404, Response.INCORRECT_DATA_REQUESTED);
+        else {
+            repository.delete(name);
+            Server.sendResponse(exchange, 204);
         }
     }
 }

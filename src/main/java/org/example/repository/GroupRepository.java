@@ -17,11 +17,11 @@ public class GroupRepository {
     private final static String sql_create_group =
             "INSERT INTO groups (name, description) VALUES (?, ?)";
     private final static String sql_update_group =
-            "UPDATE groups SET name=?, description=? WHERE id=?";
+            "UPDATE groups SET name=?, description=? WHERE name=?";
     private final static String sql_delete_group =
-            "DELETE FROM groups WHERE id=?";
+            "DELETE FROM groups WHERE name=?";
     private final static String sql_find_by_id =
-            "SELECT * FROM groups WHERE id=?";
+            "SELECT * FROM groups WHERE name=?";
 
     public GroupRepository(Connection connection) throws SQLException {
         this.connection = connection;
@@ -41,33 +41,32 @@ public class GroupRepository {
         }
     }
 
-    public void delete(int id) {
+    public void delete(String name) {
         try {
-            delete_group.setInt(1, id);
+            delete_group.setString(1, name);
             delete_group.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
         }
     }
 
-    public void update(int id, Group group) {
+    public void update(String name, Group group) {
         try {
             update_group.setString(1, group.getName());
             update_group.setString(2, group.getDescription());
-            update_group.setInt(3, id);
+            update_group.setString(3, name);
             update_group.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
         }
     }
 
-    public Group find_by_id(int id) {
+    public Group find_by_name(String name) {
         try {
-            find_group_by_id.setInt(1, id);
+            find_group_by_id.setString(1, name);
             ResultSet set = find_group_by_id.executeQuery();
             if (set.next())
                 return new Group(
-                        set.getInt("id"),
                         set.getString("name"),
                         set.getString("description")
                 );
@@ -92,7 +91,6 @@ public class GroupRepository {
             List<Group> list = new LinkedList<>();
             while (set.next())
                 list.add(new Group(
-                        set.getInt("id"),
                         set.getString("name"),
                         set.getString("description")
                 ));

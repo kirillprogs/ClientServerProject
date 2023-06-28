@@ -15,13 +15,13 @@ public class ProductRepository {
     private final PreparedStatement find_product_by_id;
 
     private final static String sql_create_product =
-            "INSERT INTO products (group_id, name, description, amount, price) VALUES (?, ?, ?, ?, ?)";
+            "INSERT INTO products (name, group_name, description, amount, price) VALUES (?, ?, ?, ?, ?)";
     private final static String sql_update_product =
-            "UPDATE products SET group_id=?, name=?, description=?, amount=?, price=? WHERE id=?";
+            "UPDATE products SET name=?, group_name=?, description=?, amount=?, price=? WHERE name=?";
     private final static String sql_delete_product =
-            "DELETE FROM products WHERE id=?";
+            "DELETE FROM products WHERE name=?";
     private final static String sql_find_by_id =
-            "SELECT * FROM products WHERE id=?";
+            "SELECT * FROM products WHERE name=?";
 
     public ProductRepository(Connection connection) throws SQLException {
         this.connection = connection;
@@ -33,8 +33,8 @@ public class ProductRepository {
 
     public void create(Product product) {
         try {
-            create_product.setInt(1, product.getGroup_id());
-            create_product.setString(2, product.getName());
+            create_product.setString(1, product.getName());
+            create_product.setString(2, product.getGroup_name());
             create_product.setString(3, product.getDescription());
             create_product.setDouble(4, product.getAmount());
             create_product.setDouble(5, product.getPrice());
@@ -44,38 +44,37 @@ public class ProductRepository {
         }
     }
 
-    public void delete(int id) {
+    public void delete(String name) {
         try {
-            delete_product.setInt(1, id);
+            delete_product.setString(1, name);
             delete_product.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
         }
     }
 
-    public void update(int id, Product product) {
+    public void update(String name, Product product) {
         try {
-            update_product.setInt(1, product.getGroup_id());
-            update_product.setString(2, product.getName());
+            update_product.setString(1, product.getName());
+            update_product.setString(2, product.getGroup_name());
             update_product.setString(3, product.getDescription());
             update_product.setDouble(4, product.getAmount());
             update_product.setDouble(5, product.getPrice());
-            update_product.setInt(6, id);
+            update_product.setString(6, name);
             update_product.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
         }
     }
 
-    public Product find_by_id(int id) {
+    public Product find_by_name(String name) {
         try {
-            find_product_by_id.setInt(1, id);
+            find_product_by_id.setString(1, name);
             ResultSet set = find_product_by_id.executeQuery();
             if (set.next())
                 return new Product(
-                        set.getInt("id"),
-                        set.getInt("group_id"),
                         set.getString("name"),
+                        set.getString("group_name"),
                         set.getString("description"),
                         set.getDouble("amount"),
                         set.getDouble("price")
@@ -87,7 +86,7 @@ public class ProductRepository {
         return null;
     }
 
-    public List<Product> list_by_criteria(List<Integer> group_ids, String name_pattern,
+    public List<Product> list_by_criteria(List<String> group_ids, String name_pattern,
                                           String description_pattern,
                                           double amount_lower, double amount_upper,
                                           double price_lower, double price_upper) {
@@ -101,8 +100,8 @@ public class ProductRepository {
 
             if (group_ids != null && !group_ids.isEmpty()) {
                 sql.append(" AND group_id IN (");
-                for (int group_id : group_ids)
-                    sql.append(group_id).append(",");
+                for (String group_id : group_ids)
+                    sql.append("'").append(group_id).append("'").append(",");
                 sql.deleteCharAt(sql.length() - 1);
                 sql.append(")");
             }
@@ -126,9 +125,8 @@ public class ProductRepository {
             List<Product> list = new LinkedList<>();
             while (set.next())
                 list.add(new Product(
-                        set.getInt("id"),
-                        set.getInt("group_id"),
                         set.getString("name"),
+                        set.getString("group_name"),
                         set.getString("description"),
                         set.getDouble("amount"),
                         set.getDouble("price")

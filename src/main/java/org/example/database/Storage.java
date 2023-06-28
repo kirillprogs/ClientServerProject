@@ -23,9 +23,6 @@ public class Storage {
     public Storage() throws ClassNotFoundException, SQLException {
         Class.forName("org.sqlite.JDBC");
         connection = DriverManager.getConnection("jdbc:sqlite:storage.db");
-//        Class.forName("org.postgresql.Driver");
-//        connection = DriverManager.getConnection("jdbc:postgresql://localhost:5432/store",
-//                "user", "password");
         create_database();
 //        StoreRepository storeRepository = new StoreRepository(connection);
         GroupRepository groupRepository = new GroupRepository(connection);
@@ -42,30 +39,29 @@ public class Storage {
         statement.execute(sql);
         sql = "" +
                 "CREATE TABLE IF NOT EXISTS groups (" +
-                "    id INTEGER PRIMARY KEY AUTOINCREMENT," +
-                "    name VARCHAR NOT NULL," +
+                "    name        VARCHAR NOT NULL," +
                 "    description VARCHAR NOT NULL," +
-                "    UNIQUE (name)" +
+                "    PRIMARY KEY (name)" +
                 ")";
         statement.execute(sql);
         sql = "" +
                 "CREATE TABLE IF NOT EXISTS products (" +
-                "    id INTEGER PRIMARY KEY AUTOINCREMENT," +
-                "    group_id INTEGER NOT NULL," +
-                "    name VARCHAR NOT NULL," +
+                "    name        VARCHAR NOT NULL," +
+                "    group_name  INTEGER NOT NULL," +
                 "    description VARCHAR NOT NULL," +
-                "    amount REAL NOT NULL," +
-                "    price REAL NOT NULL," +
-                "    FOREIGN KEY (group_id) REFERENCES groups (id)" +
-                "        ON UPDATE CASCADE ON DELETE CASCADE," +
-                "    UNIQUE (name)" +
+                "    amount      REAL    NOT NULL," +
+                "    price       REAL    NOT NULL," +
+                "    PRIMARY KEY (name)," +
+                "    FOREIGN KEY (group_name) REFERENCES groups (name)" +
+                "        ON UPDATE CASCADE ON DELETE CASCADE" +
                 ")";
         statement.execute(sql);
         sql = "" +
                 "CREATE TABLE IF NOT EXISTS users (" +
-                "    name VARCHAR PRIMARY KEY NOT NULL," +
+                "    name VARCHAR NOT NULL," +
                 "    role VARCHAR NULL," +
-                "    password VARCHAR NOT NULL" +
+                "    password VARCHAR NOT NULL," +
+                "    PRIMARY KEY (name)" +
                 ")";
         statement.execute(sql);
         statement.close();

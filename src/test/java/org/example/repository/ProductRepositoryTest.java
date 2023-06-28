@@ -19,9 +19,11 @@ class ProductRepositoryTest {
         GroupRepository groupRepository = new GroupRepository(storage.getConnection());
         groupRepository.create(new Group("Sea products", "Taken from deeps"));
         ProductRepository repository = new ProductRepository(storage.getConnection());
-        repository.create(new Product("Fish", 1, 1.5, 150.00));
-        repository.delete(2);
-        repository.update(5, new Product(-1, 5, "Meat", "Fresh chicken", 0.5, 2.5));
-        System.out.println(repository.find_by_id(5));
+        repository.create(new Product("Fish", "Sea products", 1.5, 150.00));
+        repository.create(new Product("Apple", "Sea products", 1.5, 150.00));
+        repository.delete("Fish");
+        repository.update("Apple",
+                new Product("Meat", "Sea products", "Fresh chicken", 0.5, 2.5));
+        System.out.println(repository.find_by_name("Meat"));
     }
 }

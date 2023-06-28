@@ -47,20 +47,8 @@ public class Server {
 
     private static class RootHandler implements HttpHandler {
         @Override
-        public void handle(HttpExchange exchange) throws IOException {
-            StringBuilder builder = new StringBuilder();
-            builder.append("<h1>URI: ").append(exchange.getRequestURI()).append("</h1>");
-            Headers headers = exchange.getRequestHeaders();
-            for (String header : headers.keySet()) {
-                builder.append("<p>").append(header).append("=")
-                        .append(headers.getFirst(header)).append("</p>");
-            }
-            byte[] bytes = builder.toString().getBytes();
-            exchange.sendResponseHeaders(200, bytes.length);
-
-            OutputStream os = exchange.getResponseBody();
-            os.write(bytes);
-            os.close();
+        public void handle(HttpExchange exchange) {
+            sendResponse(exchange, 404, NO_SUCH_PAGE);
         }
     }
 
@@ -69,7 +57,7 @@ public class Server {
         public void handle(HttpExchange exchange) {
             String username = exchange.getRequestHeaders().getFirst("Username");
             String password = exchange.getRequestHeaders().getFirst("Password");
-            System.out.println(username+" : "+password);
+            System.out.println(username+" : "+password);////////////////////////////////////////////////////
             if (username == null || password == null)
                 sendResponse(exchange, 400, LOGIN_INCORRECT);
             User user = userRepository.find_by_name(username);
@@ -88,7 +76,7 @@ public class Server {
 
     private class ProductHandler implements HttpHandler {
         @Override
-        public void handle(HttpExchange exchange) throws IOException {
+        public void handle(HttpExchange exchange) {
             switch (exchange.getRequestMethod()) {
                 case "GET": {
                     productController.findId(exchange);
@@ -109,13 +97,12 @@ public class Server {
                 default:
                     System.out.println(exchange.getRequestMethod());
             }
-            exchange.getResponseHeaders().add("content-type", "application/json");
         }
     }
 
     private class GroupHandler implements HttpHandler {
         @Override
-        public void handle(HttpExchange exchange) throws IOException {
+        public void handle(HttpExchange exchange) {
             switch (exchange.getRequestMethod()) {
                 case "GET": {
                     groupController.findId(exchange);
@@ -136,7 +123,6 @@ public class Server {
                 default:
                     System.out.println(exchange.getRequestMethod());
             }
-            exchange.getResponseHeaders().add("content-type", "application/json");
         }
     }
 
@@ -145,13 +131,13 @@ public class Server {
         public Result authenticate(HttpExchange httpExchange) {
             String token = httpExchange.getRequestHeaders().getFirst("Authorization");
             if (token != null) {
-                if (token.equals("special"))
-                    return new Success(new HttpPrincipal("admin", "admin"));
+                if (token.equals("special"))///////////////////////////////////////////////////////////////
+                    return new Success(new HttpPrincipal("admin", "admin"));////////////////
                 try {
                     Claims claims = JwtAuthorization.verifyToken(token);
                     String username = claims.getSubject();
                     String password = (String) claims.get("password");
-                    System.out.println("In token: "+username+" : "+password);
+                    System.out.println("In token: "+username+" : "+password);/////////////////////////////
 
                     User user = userRepository.find_by_name(username);
                     if (!user.getPassword().equals(password))

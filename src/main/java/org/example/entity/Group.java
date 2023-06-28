@@ -10,7 +10,6 @@ import org.json.JSONObject;
 @AllArgsConstructor
 public class Group {
 
-    private int id;
     private String name;
     private String description;
 
@@ -18,13 +17,8 @@ public class Group {
         this(name, "");
     }
 
-    public Group(String name, String description) {
-        this(0, name, description);
-    }
-
     public JSONObject toJSON() {
         return new JSONObject()
-                .put("id", id)
                 .put("name", name)
                 .put("description", description);
     }
