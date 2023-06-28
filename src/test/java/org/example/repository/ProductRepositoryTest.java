@@ -3,7 +3,6 @@ package org.example.repository;
 import org.example.database.Storage;
 import org.example.entity.Group;
 import org.example.entity.Product;
-import org.example.repository.ProductRepository;
 import org.junit.jupiter.api.Test;
 
 import java.io.File;
