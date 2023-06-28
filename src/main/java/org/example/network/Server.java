@@ -145,15 +145,19 @@ public class Server {
         public Result authenticate(HttpExchange httpExchange) {
             String token = httpExchange.getRequestHeaders().getFirst("Authorization");
             if (token != null) {
-                Claims claims = JwtAuthorization.verifyToken(token);
-                String username = claims.getSubject();
-                String password = (String) claims.get("password");
-                System.out.println("In token: "+username+" : "+password);
+                try {
+                    Claims claims = JwtAuthorization.verifyToken(token);
+                    String username = claims.getSubject();
+                    String password = (String) claims.get("password");
+                    System.out.println("In token: "+username+" : "+password);
 
-                User user = userRepository.find_by_name(username);
-                if (!user.getPassword().equals(password))
-                    return new Failure(401);
-                return new Success(new HttpPrincipal(username, user.getRole()));
+                    User user = userRepository.find_by_name(username);
+                    if (!user.getPassword().equals(password))
+                        return new Failure(401);
+                    return new Success(new HttpPrincipal(username, user.getRole()));
+                } catch (Exception e) {
+                    return new Failure(403);
+                }
             }
             return new Failure(403);
         }
