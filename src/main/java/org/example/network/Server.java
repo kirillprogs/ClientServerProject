@@ -4,6 +4,7 @@ import com.sun.net.httpserver.*;
 import io.jsonwebtoken.Claims;
 import org.example.controller.GroupController;
 import org.example.controller.ProductController;
+import org.example.controller.StoreController;
 import org.example.database.Storage;
 import org.example.entity.User;
 import org.example.repository.UserRepository;
@@ -19,12 +20,14 @@ public class Server {
 
     private final ProductController productController;
     private final GroupController groupController;
+    private final StoreController storeController;
     private final UserRepository userRepository;
 
     public Server(int port) throws SQLException, ClassNotFoundException, IOException {
         Storage storage = new Storage();
         this.productController = storage.getProductController();
         this.groupController = storage.getGroupController();
+        this.storeController = storage.getStoreController();
         this.userRepository = storage.getUserRepository();
 
         HttpServer server = HttpServer.create();
@@ -47,6 +50,11 @@ public class Server {
         server.createContext("/api/goods/all/", new AllProductHandler())
                 .setAuthenticator(new ServerAuthenticator());
 
+        server.createContext("/api/value/store/", new StoreValueHandler())
+                .setAuthenticator(new ServerAuthenticator());
+
+        server.createContext("/api/value/group/", new GroupValueHandler())
+                .setAuthenticator(new ServerAuthenticator());
         server.setExecutor(null);
         server.start();
     }
@@ -62,6 +70,20 @@ public class Server {
         @Override
         public void handle(HttpExchange exchange) {
             productController.getAll(exchange);
+        }
+    }
+
+    private class StoreValueHandler implements HttpHandler {
+        @Override
+        public void handle(HttpExchange exchange) {
+            storeController.storeValue(exchange);
+        }
+    }
+
+    private class GroupValueHandler implements HttpHandler {
+        @Override
+        public void handle(HttpExchange exchange) {
+            storeController.groupValue(exchange);
         }
     }
 

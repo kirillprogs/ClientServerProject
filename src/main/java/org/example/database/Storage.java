@@ -15,7 +15,7 @@ import java.sql.*;
 public class Storage {
 
     private final Connection connection;
-    //    private final StoreController storeController;
+    private final StoreController storeController;
     private final GroupController groupController;
     private final ProductController productController;
     private final UserRepository userRepository;
@@ -24,11 +24,11 @@ public class Storage {
         Class.forName("org.sqlite.JDBC");
         connection = DriverManager.getConnection("jdbc:sqlite:storage.db");
         create_database();
-//        StoreRepository storeRepository = new StoreRepository(connection);
+        StoreRepository storeRepository = new StoreRepository(connection);
         GroupRepository groupRepository = new GroupRepository(connection);
         ProductRepository productRepository = new ProductRepository(connection);
         this.userRepository = new UserRepository(connection);
-//        storeController = new StoreController(storeRepository);
+        storeController = new StoreController(storeRepository);
         groupController = new GroupController(groupRepository);
         productController = new ProductController(productRepository);
     }
