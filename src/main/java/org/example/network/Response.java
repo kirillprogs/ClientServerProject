@@ -10,5 +10,6 @@ public class Response {
     public static final String INCORRECT_DATA_REQUESTED = "Incorrect data requested from database";
     public static final String NO_SUCH_PAGE = "No such page";
     public static final String SQL_ERROR = "SQL error occurred";
+    public static final String INCORRECT_CONTENT_TYPE = "Content type is incorrect";
     public static final String VALUES_OUT_BOUNDS = "Values are out of bounds";
 }

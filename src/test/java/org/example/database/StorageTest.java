@@ -23,7 +23,7 @@ class StorageTest {
         groupRepository.create(new Group("Fruit", "Fresh and juicy fruits"));
         productRepository.create(new Product("Poultry", "Meat", "Yet yesterday it was running", 5, 146.3));
         productRepository.create(new Product("Beef", "Meat", "Very tasty if well roasted", 3, 315.2));
-        productRepository.create(new Product("Pork", "Meat", "Good for soup boiling", 4, 213.3));
+        productRepository.create(new Product("Pork", "Meat", "Good for soup boiling", 4, 213.384));
         productRepository.create(new Product("Tuna", "Fish", "Canned", 2, 69.7));
         productRepository.create(new Product("Apple", "Fruit", "Beautiful red", 28, 2.0));
         productRepository.create(new Product("Melon", "Fruit", "Wonderful scent", 7, 45.7));

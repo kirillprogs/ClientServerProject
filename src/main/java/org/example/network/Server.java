@@ -64,6 +64,9 @@ public class Server {
                 exchange -> productController.changeAmount(exchange, false))
                 .setAuthenticator(new ServerAuthenticator());
 
+        server.createContext("/api/search/", productController::search)
+                .setAuthenticator(new ServerAuthenticator());
+
         server.setExecutor(null);
         server.start();
     }

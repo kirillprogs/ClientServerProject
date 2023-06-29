@@ -5,6 +5,7 @@ import org.example.entity.Product;
 import org.example.network.Response;
 import org.example.network.Server;
 import org.example.repository.ProductRepository;
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -173,6 +174,39 @@ public class ProductController {
             Server.sendResponse(exchange, 400, Response.JSON_FORMAT_ERROR);
         } catch (IOException e) {
             Server.sendResponse(exchange, 501, Response.READ_WRITE_ERROR);
+        }
+    }
+
+    public void search(HttpExchange exchange) {
+        String path = exchange.getRequestURI().getPath();
+        String[] array = path.split("/");
+        if (array.length != 3) {
+            Server.sendResponse(exchange, 400, Response.URL_PARAMETERS_INCORRECT);
+            return;
+        }
+        try {
+            byte[] bytes = exchange.getRequestBody().readAllBytes();
+            JSONObject object = new JSONObject(new String(bytes));
+            String name = object.has("name") ? object.getString("name") : null;
+            String description = object.has("description") ? object.getString("description") : null;
+            double amountLower = object.has("amount_lower") ? object.getDouble("amount_lower") : -1;
+            double amountUpper = object.has("amount_upper") ? object.getDouble("amount_upper") : -1;
+            double priceLower = object.has("price_lower") ? object.getDouble("price_lower") : -1;
+            double priceUpper = object.has("price_upper") ? object.getDouble("price_upper") : -1;
+            List<String> groups = new LinkedList<>();
+            if (object.has("groups")) {
+                JSONArray arrayGroups = object.getJSONArray("groups");
+                for (int i = 0; i < arrayGroups.length(); i++)
+                    groups.add(arrayGroups.getString(i));
+            }
+            List<Product> list = repository.list_by_criteria(groups, name, description
+                    , amountLower, amountUpper, priceLower, priceUpper);
+            exchange.getResponseHeaders().add("Content-Type", "application/json");
+            Server.sendResponse(exchange, 200, ControllerUtilities.productListToJSON(list).toString());
+        } catch (IOException e) {
+            Server.sendResponse(exchange, 501, Response.READ_WRITE_ERROR);
+        } catch (JSONException e) {
+            Server.sendResponse(exchange, 400, Response.JSON_FORMAT_ERROR);
         }
     }
 }
