@@ -30,7 +30,7 @@ public class Storage {
         this.userRepository = new UserRepository(connection);
         storeController = new StoreController(storeRepository);
         groupController = new GroupController(groupRepository);
-        productController = new ProductController(productRepository);
+        productController = new ProductController(productRepository, groupRepository);
     }
 
     private void create_database() throws SQLException {

@@ -102,11 +102,11 @@ public class Server {
                     break;
                 }
                 case "POST": {
-                    productController.create(exchange);
+                    productController.set(exchange, false);
                     break;
                 }
                 case "PUT": {
-                    productController.update(exchange);
+                    productController.set(exchange, true);
                     break;
                 }
                 case "DELETE": {
@@ -114,7 +114,7 @@ public class Server {
                     break;
                 }
                 default:
-                    System.out.println(exchange.getRequestMethod());
+                    Server.sendResponse(exchange, 406, "Incorrect request method");
             }
         }
     }
@@ -140,7 +140,7 @@ public class Server {
                     break;
                 }
                 default:
-                    System.out.println(exchange.getRequestMethod());
+                    Server.sendResponse(exchange, 406, "Incorrect request method");
             }
         }
     }

@@ -5,6 +5,7 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 @Getter
@@ -22,6 +23,15 @@ public class Product {
 
     public Product(String name, String group_name, double amount, double price) {
         this(name, group_name, "", amount, price);
+    }
+
+    public Product(String json) throws JSONException {
+        JSONObject object = new JSONObject(json);
+        name = object.getString("name");
+        group_name = object.getString("group_name");
+        description = object.getString("description");
+        amount = object.getDouble("amount");
+        price = object.getDouble("price");
     }
 
     public JSONObject toJSON() {

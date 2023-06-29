@@ -1,9 +1,11 @@
 package org.example.controller;
 
 import com.sun.net.httpserver.HttpExchange;
+import org.example.entity.Group;
 import org.example.entity.Product;
 import org.example.network.Response;
 import org.example.network.Server;
+import org.example.repository.GroupRepository;
 import org.example.repository.ProductRepository;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -16,9 +18,11 @@ import java.util.List;
 public class ProductController {
 
     private final ProductRepository repository;
+    private final GroupRepository groupRepository;
 
-    public ProductController(ProductRepository repository) {
+    public ProductController(ProductRepository repository, GroupRepository groupRepository) {
         this.repository = repository;
+        this.groupRepository = groupRepository;
     }
 
     public void findId(HttpExchange exchange) {
@@ -38,77 +42,39 @@ public class ProductController {
         }
     }
 
-    public void create(HttpExchange exchange) {
+    public void set(HttpExchange exchange, boolean change) {
         String path = exchange.getRequestURI().getPath();
         String[] array = path.split("/");
-        if (array.length != 3) {
+        if (array.length != (change ? 4 : 3)) {
             Server.sendResponse(exchange, 400, Response.URL_PARAMETERS_INCORRECT);
             return;
         }
         try {
             byte[] bytes = exchange.getRequestBody().readAllBytes();
-            JSONObject object = new JSONObject(new String(bytes));
-            Product product = new Product(
-                    object.getString("name"),
-                    object.getString("group_name"),
-                    object.getString("description"),
-                    object.getDouble("amount"),
-                    object.getDouble("price")
-            );
+            Product product = new Product(new String(bytes));
             Product found = repository.find_by_name(product.getName());
             if (found != null) {
-                Server.sendResponse(exchange, 403, "Product with this name already exists");
+                if (!change || !found.getName().equals(array[3])) {
+                    Server.sendResponse(exchange, 403, "Product with this name already exists");
+                    return;
+                }
+            }
+            Group group = groupRepository.find_by_name(product.getGroup_name());
+            if (group == null) {
+                Server.sendResponse(exchange, 403, "Cannot create product: no such group");
                 return;
             }
             if (product.getPrice() < 0 || product.getAmount() < 0) {
                 Server.sendResponse(exchange, 403, "Price and amount cannot be negative");
                 return;
             }
-            repository.create(product);
-            Server.sendResponse(exchange, 201, "");
-        } catch (JSONException e) {
-            Server.sendResponse(exchange, 400, Response.JSON_FORMAT_ERROR);
-        } catch (IOException e) {
-            Server.sendResponse(exchange, 501, Response.READ_WRITE_ERROR);
-        }
-    }
-
-    public void update(HttpExchange exchange) {
-        String path = exchange.getRequestURI().getPath();
-        String[] array = path.split("/");
-        if (array.length != 4) {
-            Server.sendResponse(exchange, 400, Response.URL_PARAMETERS_INCORRECT);
-            return;
-        }
-        try {
-            String id = array[3];
-            Product found = repository.find_by_name(id);
-            if (found == null) {
-                Server.sendResponse(exchange, 404, "No product with this name");
-                return;
-            }
-            byte[] bytes = exchange.getRequestBody().readAllBytes();
-            JSONObject object = new JSONObject(new String(bytes));
-            Product product = new Product(
-                    object.getString("name"),
-                    object.getString("group_name"),
-                    object.getString("description"),
-                    object.getDouble("amount"),
-                    object.getDouble("price")
-            );
-            found = repository.find_by_name(product.getName());
-            if (found != null) {
-                Server.sendResponse(exchange, 403, "Product with this name already exists");
-                return;
-            }
-            if (product.getPrice() < 0 || product.getAmount() < 0) {
-                Server.sendResponse(exchange, 403, "Price and amount cannot be negative");
-                return;
-            }
-            repository.update(id, product);
+            if (change)
+                repository.update(array[3], product);
+            else
+                repository.create(product);
             Server.sendResponse(exchange, 204);
         } catch (JSONException e) {
-            Server.sendResponse(exchange, 501, Response.JSON_FORMAT_ERROR);
+            Server.sendResponse(exchange, 400, Response.JSON_FORMAT_ERROR);
         } catch (IOException e) {
             Server.sendResponse(exchange, 501, Response.READ_WRITE_ERROR);
         }
