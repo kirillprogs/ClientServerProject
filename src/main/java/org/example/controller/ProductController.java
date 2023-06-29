@@ -55,17 +55,17 @@ public class ProductController {
             Product found = repository.find_by_name(product.getName());
             if (found != null) {
                 if (!change || !found.getName().equals(array[3])) {
-                    Server.sendResponse(exchange, 403, "Product with this name already exists");
+                    Server.sendResponse(exchange, 401, "Product with this name already exists");
                     return;
                 }
             }
             Group group = groupRepository.find_by_name(product.getGroup_name());
             if (group == null) {
-                Server.sendResponse(exchange, 403, "Cannot create product: no such group");
+                Server.sendResponse(exchange, 401, "Cannot create product: no such group");
                 return;
             }
             if (product.getPrice() < 0 || product.getAmount() < 0) {
-                Server.sendResponse(exchange, 403, "Price and amount cannot be negative");
+                Server.sendResponse(exchange, 401, "Price and amount cannot be negative");
                 return;
             }
             if (change)

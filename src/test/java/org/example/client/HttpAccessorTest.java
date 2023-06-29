@@ -1,11 +1,41 @@
 package org.example.client;
 
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 class HttpAccessorTest {
+
     @Test
-    void test() {
+    void productTest() throws Exception {
         HttpAccessor accessor = new HttpAccessor();
         accessor.login("jerry", "abba");
+        accessor.findProductId("Beef");
+//        accessor.findProductId("be");
+//        accessor.findProductId("bebe/abe/");
+        accessor.createProduct("Chicken1", "Meat", "Yet yesterday", 19, 145.2);
+        System.out.println(accessor.findProductId("Chicken"));
+        accessor.updateProduct("Chicken1", "Turkey", "Meat", "Yet yesterday", 19, 145.2);
+        System.out.println(accessor.findProductId("Turkey"));
+        accessor.deleteProduct("Turkey");
+        try {
+            System.out.println(accessor.findProductId("Turkey"));
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+    }
+
+    @Test
+    void groupTest() {
+
+    }
+
+    @Test
+    void valueTest() {
+
+    }
+
+    @Test
+    void searchTest() {
+
     }
 }

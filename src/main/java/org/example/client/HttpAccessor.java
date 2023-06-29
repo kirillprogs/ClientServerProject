@@ -2,6 +2,7 @@ package org.example.client;
 
 import org.example.entity.Group;
 import org.example.entity.Product;
+import org.json.JSONException;
 
 import java.io.IOException;
 import java.net.URI;
@@ -13,26 +14,27 @@ import java.util.List;
 
 public class HttpAccessor {
 
-    private HttpClient httpClient;
-    private String token;
+    private final HttpClient httpClient;
+    private String token = "def";
+    private final String prefix;
 
     public HttpAccessor() {
         httpClient = HttpClient.newHttpClient();
+        prefix = "http://localhost:12369";
     }
 
-    public void login(String username, String password) {
+    public void login(String username, String password) throws Exception {
         try {
             HttpRequest request = HttpRequest.newBuilder()
-                    .uri(new URI("http://localhost:12369/login/"))
+                    .uri(new URI(prefix + "/login/"))
                     .header("Username", username)
                     .header("Password", password)
                     .build();
             HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
-            System.out.println(response.body());
-        } catch (URISyntaxException e) {
-            System.err.println("Incorrect URI");
-        } catch (IOException | InterruptedException e) {
+            token = response.body();
+        } catch (URISyntaxException | IOException | InterruptedException e) {
             e.printStackTrace();
+            throw new Exception("Error processing query: see log");
         }
     }
 
@@ -40,22 +42,86 @@ public class HttpAccessor {
 
     }
 
-    public Product findProductId(String name) {
-        return null;
+    public Product findProductId(String name) throws Exception {
+        try {
+            HttpRequest request = HttpRequest.newBuilder()
+                    .uri(new URI(prefix + "/api/good/" + name + "/"))
+                    .header("Authorization", token)
+                    .GET()
+                    .build();
+            HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
+            if (response.statusCode() == 200)
+                return new Product(response.body());
+            if (response.statusCode() == 403)
+                throw new Exception("Unauthorized");
+            throw new Exception(response.body());
+        } catch (JSONException | URISyntaxException | IOException | InterruptedException e) {
+            e.printStackTrace();
+            throw new Exception("Error processing query: see log");
+        }
     }
 
     public void createProduct(String name, String group_name,
-                              String description, double amount, double price) {
-
+                              String description, double amount, double price) throws Exception {
+        try {
+            String json = new Product(name, group_name, description, amount, price).toJSON().toString();
+            HttpRequest request = HttpRequest.newBuilder()
+                    .uri(new URI(prefix + "/api/good/"))
+                    .header("Authorization", token)
+                    .header("Content-Type", "application/json")
+                    .POST(HttpRequest.BodyPublishers.ofString(json))
+                    .build();
+            HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
+            if (response.statusCode() == 204)
+                return;
+            if (response.statusCode() == 403)
+                throw new Exception("Unauthorized");
+            throw new Exception(response.body());
+        } catch (JSONException | URISyntaxException | IOException | InterruptedException e) {
+            e.printStackTrace();
+            throw new Exception("Error processing query: see log");
+        }
     }
 
     public void updateProduct(String id, String name, String group_name,
-                              String description, double amount, double price) {
-
+                              String description, double amount, double price) throws Exception {
+        try {
+            String json = new Product(name, group_name, description, amount, price).toJSON().toString();
+            HttpRequest request = HttpRequest.newBuilder()
+                    .uri(new URI(prefix + "/api/good/" + id + "/"))
+                    .header("Authorization", token)
+                    .header("Content-Type", "application/json")
+                    .PUT(HttpRequest.BodyPublishers.ofString(json))
+                    .build();
+            HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
+            if (response.statusCode() == 204)
+                return;
+            if (response.statusCode() == 403)
+                throw new Exception("Unauthorized");
+            throw new Exception(response.body());
+        } catch (JSONException | URISyntaxException | IOException | InterruptedException e) {
+            e.printStackTrace();
+            throw new Exception("Error processing query: see log");
+        }
     }
 
-    public void deleteProduct(String name) {
-
+    public void deleteProduct(String name) throws Exception {
+        try {
+            HttpRequest request = HttpRequest.newBuilder()
+                    .uri(new URI(prefix + "/api/good/" + name + "/"))
+                    .header("Authorization", token)
+                    .DELETE()
+                    .build();
+            HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
+            if (response.statusCode() == 204)
+                return;
+            if (response.statusCode() == 403)
+                throw new Exception("Unauthorized");
+            throw new Exception(response.body());
+        } catch (JSONException | URISyntaxException | IOException | InterruptedException e) {
+            e.printStackTrace();
+            throw new Exception("Error processing query: see log");
+        }
     }
 
     public Group findGroupId(String name) {

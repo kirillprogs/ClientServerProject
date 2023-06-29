@@ -9,6 +9,6 @@ public class Controller {
     public int login(String username, char[] password) {
         if (username.equals("admin") && String.valueOf(password).equals("password"))
             return 0;
-        return Errors.USER_NOT_FOUND;
+        return Errors.NO_SUCH_USER;
     }
 }
