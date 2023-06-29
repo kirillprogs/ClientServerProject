@@ -1,3 +1,5 @@
 .idea/
 target/
 *.db
+client_UI/build
+client_UI/node_modules
