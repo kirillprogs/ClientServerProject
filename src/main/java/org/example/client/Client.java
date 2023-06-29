@@ -5,8 +5,8 @@ import java.awt.*;
 
 public class Client {
     private final JFrame frame;
-    private final JPanel cardPanel;
-    private final CardLayout cardLayout;
+    protected static  JPanel cardPanel;
+    protected static CardLayout cardLayout;
     private final Controller controller;
 
     public Client() {
@@ -19,8 +19,8 @@ public class Client {
         cardPanel.setLayout(cardLayout);
 
         cardPanel.add(createLoginPanel(), "login");
-        cardPanel.add(createGroupPanel(), "group");
-        cardPanel.add(createProductPanel(), "product");
+        cardPanel.add(GroupPanel.createGroupPanel(), "group");
+        cardPanel.add(ProductPanel.createProductPanel(), "product");
 
         frame.add(cardPanel);
         cardLayout.show(cardPanel, "login");
@@ -59,44 +59,6 @@ public class Client {
         loginPanel.add(inputPanel, BorderLayout.CENTER);
 
         return loginPanel;
-    }
-
-    private JPanel createGroupPanel() {
-        JPanel groupPanel = new JPanel();
-        groupPanel.setLayout(new BorderLayout());
-
-        JLabel groupLabel = new JLabel("Welcome to the Group Window");
-        groupLabel.setHorizontalAlignment(SwingConstants.CENTER);
-        groupLabel.setFont(new Font("Arial", Font.BOLD, 18));
-
-        JButton switchToProductButton = new JButton("Switch to Product Window");
-        switchToProductButton.addActionListener(e -> {
-            cardLayout.show(cardPanel, "product"); // Switch to the product window
-        });
-
-        groupPanel.add(groupLabel, BorderLayout.CENTER);
-        groupPanel.add(switchToProductButton, BorderLayout.SOUTH);
-
-        return groupPanel;
-    }
-
-    private JPanel createProductPanel() {
-        JPanel productPanel = new JPanel();
-        productPanel.setLayout(new BorderLayout());
-
-        JLabel productLabel = new JLabel("Welcome to the Product Window");
-        productLabel.setHorizontalAlignment(SwingConstants.CENTER);
-        productLabel.setFont(new Font("Arial", Font.BOLD, 18));
-
-        JButton switchToGroupButton = new JButton("Switch to Group Window");
-        switchToGroupButton.addActionListener(e -> {
-            cardLayout.show(cardPanel, "group");
-        });
-
-        productPanel.add(productLabel, BorderLayout.CENTER);
-        productPanel.add(switchToGroupButton, BorderLayout.SOUTH);
-
-        return productPanel;
     }
 
     public static void main(String[] args) {
