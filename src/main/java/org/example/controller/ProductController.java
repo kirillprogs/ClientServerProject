@@ -31,7 +31,7 @@ public class ProductController {
         String name = array[3];
         Product product = repository.find_by_name(name);
         if (product == null)
-            Server.sendResponse(exchange, 404, Response.INCORRECT_DATA_REQUESTED);
+            Server.sendResponse(exchange, 404, "No product with this name");
         else {
             exchange.getResponseHeaders().add("Content-Type", "application/json");
             Server.sendResponse(exchange, 200, product.toJSON().toString());
@@ -55,10 +55,19 @@ public class ProductController {
                     object.getDouble("amount"),
                     object.getDouble("price")
             );
+            Product found = repository.find_by_name(product.getName());
+            if (found != null) {
+                Server.sendResponse(exchange, 403, "Product with this name already exists");
+                return;
+            }
+            if (product.getPrice() < 0 || product.getAmount() < 0) {
+                Server.sendResponse(exchange, 403, "Price and amount cannot be negative");
+                return;
+            }
             repository.create(product);
             Server.sendResponse(exchange, 201, "");
         } catch (JSONException e) {
-            Server.sendResponse(exchange, 501, Response.JSON_FORMAT_ERROR);
+            Server.sendResponse(exchange, 400, Response.JSON_FORMAT_ERROR);
         } catch (IOException e) {
             Server.sendResponse(exchange, 501, Response.READ_WRITE_ERROR);
         }
@@ -87,6 +96,15 @@ public class ProductController {
                     object.getDouble("amount"),
                     object.getDouble("price")
             );
+            found = repository.find_by_name(product.getName());
+            if (found != null) {
+                Server.sendResponse(exchange, 403, "Product with this name already exists");
+                return;
+            }
+            if (product.getPrice() < 0 || product.getAmount() < 0) {
+                Server.sendResponse(exchange, 403, "Price and amount cannot be negative");
+                return;
+            }
             repository.update(id, product);
             Server.sendResponse(exchange, 204);
         } catch (JSONException e) {
