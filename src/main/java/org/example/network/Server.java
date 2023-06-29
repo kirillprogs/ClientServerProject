@@ -153,11 +153,11 @@ public class Server {
                     break;
                 }
                 case "POST": {
-                    groupController.create(exchange);
+                    groupController.set(exchange, false);
                     break;
                 }
                 case "PUT": {
-                    groupController.update(exchange);
+                    groupController.set(exchange, true);
                     break;
                 }
                 case "DELETE": {

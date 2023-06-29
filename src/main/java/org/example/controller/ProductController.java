@@ -74,7 +74,7 @@ public class ProductController {
                 repository.create(product);
             Server.sendResponse(exchange, 204);
         } catch (JSONException e) {
-            Server.sendResponse(exchange, 400, Response.JSON_FORMAT_ERROR);
+            Server.sendResponse(exchange, 501, Response.JSON_FORMAT_ERROR);
         } catch (IOException e) {
             Server.sendResponse(exchange, 501, Response.READ_WRITE_ERROR);
         }

@@ -36,50 +36,26 @@ public class GroupController {
         }
     }
 
-    public void create(HttpExchange exchange) {
+    public void set(HttpExchange exchange, boolean change) {
         String path = exchange.getRequestURI().getPath();
         String[] array = path.split("/");
-        if (array.length != 3) {
+        if (array.length != (change ? 4 : 3)) {
             Server.sendResponse(exchange, 400, Response.URL_PARAMETERS_INCORRECT);
             return;
         }
         try {
             byte[] bytes = exchange.getRequestBody().readAllBytes();
-            JSONObject object = new JSONObject(new String(bytes));
-            Group group = new Group(
-                    object.getString("name"),
-                    object.getString("description")
-            );
-            repository.create(group);
-            Server.sendResponse(exchange, 201, "Group successfully created");
-        } catch (JSONException e) {
-            Server.sendResponse(exchange, 501, Response.JSON_FORMAT_ERROR);
-        } catch (IOException e) {
-            Server.sendResponse(exchange, 501, Response.READ_WRITE_ERROR);
-        }
-    }
-
-    public void update(HttpExchange exchange) {
-        String path = exchange.getRequestURI().getPath();
-        String[] array = path.split("/");
-        if (array.length != 4) {
-            Server.sendResponse(exchange, 400, Response.URL_PARAMETERS_INCORRECT);
-            return;
-        }
-        try {
-            String id = array[3];
-            Group found = repository.find_by_name(id);
-            if (found == null) {
-                Server.sendResponse(exchange, 404, "No group with this name");
-                return;
+            Group group = new Group(new String(bytes));
+            Group found = repository.find_by_name(group.getName());
+            if (found != null) {
+                if (!change || !found.getName().equals(array[3])) {
+                    Server.sendResponse(exchange, 401, "Group with the same name already exists");
+                }
             }
-            byte[] bytes = exchange.getRequestBody().readAllBytes();
-            JSONObject object = new JSONObject(new String(bytes));
-            Group group = new Group(
-                    object.getString("name"),
-                    object.getString("description")
-            );
-            repository.update(id, group);
+            if (change)
+                repository.update(array[3], group);
+            else
+                repository.create(group);
             Server.sendResponse(exchange, 204);
         } catch (JSONException e) {
             Server.sendResponse(exchange, 501, Response.JSON_FORMAT_ERROR);

@@ -1,6 +1,7 @@
 package org.example.entity;
 
 import lombok.*;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 @Getter
@@ -13,8 +14,10 @@ public class Group {
     private String name;
     private String description;
 
-    public Group(String name) {
-        this(name, "");
+    public Group(String json) throws JSONException {
+        JSONObject object = new JSONObject(json);
+        name = object.getString("name");
+        description = object.getString("description");
     }
 
     public JSONObject toJSON() {

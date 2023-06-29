@@ -18,8 +18,8 @@ class GroupRepositoryTest {
             System.out.println("Database file removed");
         Storage storage = new Storage();
         GroupRepository repository = new GroupRepository(storage.getConnection());
-        repository.create(new Group("Meat"));
-        repository.create(new Group("Fish"));
+        repository.create(new Group("Meat", ""));
+        repository.create(new Group("Fish", ""));
         List<Group> list = repository.list_by_criteria("%", null);
         for (Group group : list)
             System.out.println(group);

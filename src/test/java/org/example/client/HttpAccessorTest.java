@@ -25,8 +25,13 @@ class HttpAccessorTest {
     }
 
     @Test
-    void groupTest() {
-
+    void groupTest() throws Exception {
+        HttpAccessor accessor = new HttpAccessor();
+        accessor.login("jerry", "abba");
+        accessor.findGroupId("Meat");
+        accessor.createGroup("Home", "Utensils");
+        accessor.updateGroup("Home", "Home", "Utensils, cutlery and crockery");
+        accessor.deleteGroup("Home");
     }
 
     @Test

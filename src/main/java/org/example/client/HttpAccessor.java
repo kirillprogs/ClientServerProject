@@ -124,20 +124,84 @@ public class HttpAccessor {
         }
     }
 
-    public Group findGroupId(String name) {
-        return null;
+    public Group findGroupId(String name) throws Exception {
+        try {
+            HttpRequest request = HttpRequest.newBuilder()
+                    .uri(new URI(prefix + "/api/group/" + name + "/"))
+                    .header("Authorization", token)
+                    .GET()
+                    .build();
+            HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
+            if (response.statusCode() == 200)
+                return new Group(response.body());
+            if (response.statusCode() == 403)
+                throw new Exception("Unauthorized");
+            throw new Exception(response.body());
+        } catch (JSONException | URISyntaxException | IOException | InterruptedException e) {
+            e.printStackTrace();
+            throw new Exception("Error processing query: see log");
+        }
     }
 
-    public void createGroup(String name, String description) {
-
+    public void createGroup(String name, String description) throws Exception {
+        try {
+            String json = new Group(name, description).toJSON().toString();
+            HttpRequest request = HttpRequest.newBuilder()
+                    .uri(new URI(prefix + "/api/group/"))
+                    .header("Authorization", token)
+                    .header("Content-Type", "application/json")
+                    .POST(HttpRequest.BodyPublishers.ofString(json))
+                    .build();
+            HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
+            if (response.statusCode() == 204)
+                return;
+            if (response.statusCode() == 403)
+                throw new Exception("Unauthorized");
+            throw new Exception(response.body());
+        } catch (JSONException | URISyntaxException | IOException | InterruptedException e) {
+            e.printStackTrace();
+            throw new Exception("Error processing query: see log");
+        }
     }
 
-    public void updateGroup(String id, String name, String description) {
-
+    public void updateGroup(String id, String name, String description) throws Exception {
+        try {
+            String json = new Group(name, description).toJSON().toString();
+            HttpRequest request = HttpRequest.newBuilder()
+                    .uri(new URI(prefix + "/api/group/" + id + "/"))
+                    .header("Authorization", token)
+                    .header("Content-Type", "application/json")
+                    .PUT(HttpRequest.BodyPublishers.ofString(json))
+                    .build();
+            HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
+            if (response.statusCode() == 204)
+                return;
+            if (response.statusCode() == 403)
+                throw new Exception("Unauthorized");
+            throw new Exception(response.body());
+        } catch (JSONException | URISyntaxException | IOException | InterruptedException e) {
+            e.printStackTrace();
+            throw new Exception("Error processing query: see log");
+        }
     }
 
-    public void deleteGroup(String name) {
-
+    public void deleteGroup(String name) throws Exception {
+        try {
+            HttpRequest request = HttpRequest.newBuilder()
+                    .uri(new URI(prefix + "/api/group/" + name + "/"))
+                    .header("Authorization", token)
+                    .DELETE()
+                    .build();
+            HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
+            if (response.statusCode() == 204)
+                return;
+            if (response.statusCode() == 403)
+                throw new Exception("Unauthorized");
+            throw new Exception(response.body());
+        } catch (JSONException | URISyntaxException | IOException | InterruptedException e) {
+            e.printStackTrace();
+            throw new Exception("Error processing query: see log");
+        }
     }
 
     public List<Product> allProducts() {
