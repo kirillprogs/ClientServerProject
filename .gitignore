@@ -1,6 +1,3 @@
 .idea/
 target/
 *.db
-client_UI/build
-client_UI/node_modules
-client_UI/.idea

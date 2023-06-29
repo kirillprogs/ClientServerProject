@@ -75,7 +75,7 @@ public class Server {
 
     private class RegisterHandler implements HttpHandler {
         @Override
-        public void handle(HttpExchange exchange) throws IOException {
+        public void handle(HttpExchange exchange) {
             String username = exchange.getRequestHeaders().getFirst("Username");
             String password = exchange.getRequestHeaders().getFirst("Password");
             String passwordRepeat = exchange.getRequestHeaders().getFirst("PasswordRepeat");
@@ -96,6 +96,7 @@ public class Server {
     private class LoginHandler implements HttpHandler {
         @Override
         public void handle(HttpExchange exchange) {
+            System.out.println("here");
             String username = exchange.getRequestHeaders().getFirst("Username");
             String password = exchange.getRequestHeaders().getFirst("Password");
             System.out.println(username+" : "+password);////////////////////////////////////////////////////

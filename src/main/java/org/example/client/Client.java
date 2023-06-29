@@ -90,7 +90,7 @@ public class Client {
 
         JButton switchToGroupButton = new JButton("Switch to Group Window");
         switchToGroupButton.addActionListener(e -> {
-            cardLayout.show(cardPanel, "group"); // Switch to the group window
+            cardLayout.show(cardPanel, "group");
         });
 
         productPanel.add(productLabel, BorderLayout.CENTER);
