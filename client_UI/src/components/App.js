@@ -6,7 +6,7 @@ const Login = ({ onLogin }) => {
     const [errorMessages, setErrorMessages] = useState(null);
 
 
-    // User Login info
+    // User Login info for now
     const database = [
         {
             username: "user1",
@@ -23,7 +23,7 @@ const Login = ({ onLogin }) => {
         pass: "Invalid password"
     };
 
-    // Generate JSX code for error message
+
     const renderErrorMessage = (name) =>
         name === errorMessages.name && (
             <div className="error">{errorMessages.message}</div>
@@ -85,10 +85,9 @@ const Login = ({ onLogin }) => {
     const [groups, setGroups] = useState([]);
     const [selectedGroup, setSelectedGroup] = useState(null);
 
-    // Function to fetch groups from the server
+    // Fetch groups from the server
     const fetchGroups = () => {
-        // Make an API call to retrieve the list of groups
-        // Update the `groups` state with the response data
+
         setGroups([
             { id: 1, name: 'Group 1' },
             { id: 2, name: 'Group 2' },
@@ -96,30 +95,29 @@ const Login = ({ onLogin }) => {
         ]);
     };
 
-    // Function to delete a group
+    // Delete a certain group
     const deleteGroup = (groupId) => {
-        // Make an API call to delete the group with the given `groupId`
-        // Update the `groups` state by removing the deleted group
+
         setGroups(groups.filter((group) => group.id !== groupId));
     };
 
-    // Function to open a modal for editing/updating a group
+    // Open a window for editing/updating a group
     const editGroup = (groupId) => {
-        // Logic to open a modal or perform any other action for editing/updating the group
+
         setSelectedGroup(groupId);
     };
 
-    // Function to add a new group
+    // Add a new group
     const addGroup = () => {
-        // Logic to open a modal or perform any other action for adding a new group
+
     };
 
-    // Function to find a group by ID
+    // Find a group by ID
     const findGroupById = () => {
-        // Logic to open a modal or perform any other action for finding a group by ID
+
     };
 
-    // Function to render the group list
+    // Render the group list
     const renderGroupList = () => {
         return groups.map((group) => (
             <tr key={group.id}>
@@ -132,8 +130,6 @@ const Login = ({ onLogin }) => {
             </tr>
         ));
     };
-
-    // Fetch groups when the component mounts
     useEffect(() => {
         fetchGroups();
     }, []);
@@ -157,7 +153,7 @@ const Login = ({ onLogin }) => {
             </table>
             {selectedGroup && (
                 <div>
-                    {/* Modal or window for editing/updating the selected group */}
+                    { }
                     <button onClick={() => setSelectedGroup(null)}>Close</button>
                 </div>
             )}
@@ -168,10 +164,9 @@ const Login = ({ onLogin }) => {
 const Products = ({ onLogout }) => {
     const [products, setProducts] = useState([]);
 
-    // Function to fetch products from the server
+    // Fetch products from the server
     const fetchProducts = () => {
-        // Make an API call to retrieve the list of products
-        // Update the `products` state with the response data
+
         setProducts([
             { id: 1, name: 'Product 1' },
             { id: 2, name: 'Product 2' },
@@ -179,29 +174,28 @@ const Products = ({ onLogout }) => {
         ]);
     };
 
-    // Function to delete a product
+    // Delete a certain product
     const deleteProduct = (productId) => {
-        // Make an API call to delete the product with the given `productId`
-        // Update the `products` state by removing the deleted product
+
         setProducts(products.filter((product) => product.id !== productId));
     };
 
-    // Function to open a modal for editing/updating a product
+    // Open a window for editing/updating a product
     const editProduct = (productId) => {
-        // Logic to open a modal or perform any other action for editing/updating the product
+
     };
 
-    // Function to add a new product
+    // Add a new product
     const addProduct = () => {
-        // Logic to open a modal or perform any other action for adding a new product
+
     };
 
-    // Function to find a product by ID
+    // Find a product by ID
     const findProductById = () => {
-        // Logic to open a modal or perform any other action for finding a product by ID
+
     };
 
-    // Function to render the product list
+    // Render the product list
     const renderProductList = () => {
         return products.map((product) => (
             <tr key={product.id}>
