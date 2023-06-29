@@ -136,4 +136,43 @@ public class ProductController {
         exchange.getResponseHeaders().add("Content-Type", "application/json");
         Server.sendResponse(exchange, 200, ControllerUtilities.productListToJSON(list).toString());
     }
+
+    public void changeAmount(HttpExchange exchange, boolean increase) {
+        String path = exchange.getRequestURI().getPath();
+        String[] array = path.split("/");
+        if (array.length != 4) {
+            Server.sendResponse(exchange, 400, Response.URL_PARAMETERS_INCORRECT);
+            return;
+        }
+        try {
+            byte[] bytes = exchange.getRequestBody().readAllBytes();
+            JSONObject object = new JSONObject(new String(bytes));
+            String name = object.getString("name");
+            double amount = object.getDouble("amount");
+            if (amount < 0) {
+                Server.sendResponse(exchange, 400,
+                        "Value to increase or decrease must be non-negative");
+                return;
+            }
+            Product product = repository.find_by_name(name);
+            if (product == null) {
+                Server.sendResponse(exchange, 404, "No such product in the database");
+                return;
+            }
+            if (increase) {
+                repository.increase(name, amount);
+            } else {
+                if (product.getAmount() < amount) {
+                    Server.sendResponse(exchange, 400, "Insufficient amount of product");
+                    return;
+                }
+                repository.decrease(name, amount);
+            }
+            Server.sendResponse(exchange, 204);
+        } catch (JSONException e) {
+            Server.sendResponse(exchange, 400, Response.JSON_FORMAT_ERROR);
+        } catch (IOException e) {
+            Server.sendResponse(exchange, 501, Response.READ_WRITE_ERROR);
+        }
+    }
 }

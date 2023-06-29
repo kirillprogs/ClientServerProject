@@ -8,10 +8,15 @@ import java.util.List;
 
 public class ProductRepository {
 
+    public static final int SUCCESS = 0;
+    public static final int INSUFFICIENT = 0;
+
     private final Connection connection;
     private final PreparedStatement create_product;
     private final PreparedStatement update_product;
     private final PreparedStatement delete_product;
+    private final PreparedStatement increase_product;
+    private final PreparedStatement decrease_product;
     private final PreparedStatement find_product_by_id;
 
     private final static String sql_create_product =
@@ -22,12 +27,18 @@ public class ProductRepository {
             "DELETE FROM products WHERE name=?";
     private final static String sql_find_by_id =
             "SELECT * FROM products WHERE name=?";
+    private final static String sql_increase_product =
+            "UPDATE products SET amount=amount+? WHERE name=?";
+    private final static String sql_decrease_product =
+            "UPDATE products SET amount=amount-? WHERE name=?";
 
     public ProductRepository(Connection connection) throws SQLException {
         this.connection = connection;
         create_product = connection.prepareStatement(sql_create_product);
         update_product = connection.prepareStatement(sql_update_product);
         delete_product = connection.prepareStatement(sql_delete_product);
+        increase_product = connection.prepareStatement(sql_increase_product);
+        decrease_product = connection.prepareStatement(sql_decrease_product);
         find_product_by_id = connection.prepareStatement(sql_find_by_id);
     }
 
@@ -136,5 +147,25 @@ public class ProductRepository {
             e.printStackTrace();
         }
         return null;
+    }
+
+    public void increase(String name, double amount) {
+        try {
+            increase_product.setDouble(1, amount);
+            increase_product.setString(2, name);
+            increase_product.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void decrease(String name, double amount) {
+        try {
+            decrease_product.setDouble(1, amount);
+            decrease_product.setString(2, name);
+            decrease_product.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 }

@@ -44,47 +44,28 @@ public class Server {
         server.createContext("/api/group/", new GroupHandler())
                 .setAuthenticator(new ServerAuthenticator());
 
-        server.createContext("/api/group/all/", new AllGroupHandler())
+        server.createContext("/api/group/all/", groupController::getAll)
                 .setAuthenticator(new ServerAuthenticator());
 
-        server.createContext("/api/goods/all/", new AllProductHandler())
+        server.createContext("/api/goods/all/", productController::getAll)
                 .setAuthenticator(new ServerAuthenticator());
 
-        server.createContext("/api/value/store/", new StoreValueHandler())
+        server.createContext("/api/value/store/", storeController::storeValue)
                 .setAuthenticator(new ServerAuthenticator());
 
-        server.createContext("/api/value/group/", new GroupValueHandler())
+        server.createContext("/api/value/group/", storeController::groupValue)
                 .setAuthenticator(new ServerAuthenticator());
+
+        server.createContext("/api/operate/increase/",
+                exchange -> productController.changeAmount(exchange, true))
+                .setAuthenticator(new ServerAuthenticator());
+
+        server.createContext("/api/operate/decrease/",
+                exchange -> productController.changeAmount(exchange, false))
+                .setAuthenticator(new ServerAuthenticator());
+
         server.setExecutor(null);
         server.start();
-    }
-
-    private class AllGroupHandler implements HttpHandler {
-        @Override
-        public void handle(HttpExchange exchange) {
-            groupController.getAll(exchange);
-        }
-    }
-
-    private class AllProductHandler implements HttpHandler {
-        @Override
-        public void handle(HttpExchange exchange) {
-            productController.getAll(exchange);
-        }
-    }
-
-    private class StoreValueHandler implements HttpHandler {
-        @Override
-        public void handle(HttpExchange exchange) {
-            storeController.storeValue(exchange);
-        }
-    }
-
-    private class GroupValueHandler implements HttpHandler {
-        @Override
-        public void handle(HttpExchange exchange) {
-            storeController.groupValue(exchange);
-        }
     }
 
     private class LoginHandler implements HttpHandler {
@@ -199,7 +180,7 @@ public class Server {
 
     public static void sendResponse(HttpExchange exchange, int statusCode) {
         try {
-            exchange.sendResponseHeaders(statusCode, 0);
+            exchange.sendResponseHeaders(statusCode, -1);
         } catch (IOException e) {
             e.printStackTrace();
         }
