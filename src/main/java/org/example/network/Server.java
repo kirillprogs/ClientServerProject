@@ -22,6 +22,7 @@ public class Server {
     private final GroupController groupController;
     private final StoreController storeController;
     private final UserRepository userRepository;
+    private final static String DEFAULT_ROLE = "customer";
 
     public Server(int port) throws SQLException, ClassNotFoundException, IOException {
         Storage storage = new Storage();
@@ -37,6 +38,7 @@ public class Server {
                 .setAuthenticator(new ServerAuthenticator());
 
         server.createContext("/login/", new LoginHandler());
+        server.createContext("/register/", new RegisterHandler());
 
         server.createContext("/api/good/", new ProductHandler())
                 .setAuthenticator(new ServerAuthenticator());
@@ -71,14 +73,36 @@ public class Server {
         server.start();
     }
 
+    private class RegisterHandler implements HttpHandler {
+        @Override
+        public void handle(HttpExchange exchange) throws IOException {
+            String username = exchange.getRequestHeaders().getFirst("Username");
+            String password = exchange.getRequestHeaders().getFirst("Password");
+            String passwordRepeat = exchange.getRequestHeaders().getFirst("PasswordRepeat");
+            if (!password.equals(passwordRepeat)) {
+                sendResponse(exchange, 400, "Passwords do not match");
+                return;
+            }
+            User user = userRepository.find_by_name(username);
+            if (user != null) {
+                sendResponse(exchange, 400, "User already exists");
+                return;
+            }
+            userRepository.create(new User(username, DEFAULT_ROLE, password));
+            sendResponse(exchange, 200, "Account successfully created");
+        }
+    }
+
     private class LoginHandler implements HttpHandler {
         @Override
         public void handle(HttpExchange exchange) {
             String username = exchange.getRequestHeaders().getFirst("Username");
             String password = exchange.getRequestHeaders().getFirst("Password");
             System.out.println(username+" : "+password);////////////////////////////////////////////////////
-            if (username == null || password == null)
+            if (username == null || password == null) {
                 sendResponse(exchange, 400, LOGIN_INCORRECT);
+                return;
+            }
             User user = userRepository.find_by_name(username);
             if (user == null)
                 sendResponse(exchange, 401, NO_SUCH_USER);
