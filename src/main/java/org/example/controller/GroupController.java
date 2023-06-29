@@ -6,7 +6,6 @@ import org.example.network.Response;
 import org.example.network.Server;
 import org.example.repository.GroupRepository;
 import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.io.IOException;
 import java.util.List;

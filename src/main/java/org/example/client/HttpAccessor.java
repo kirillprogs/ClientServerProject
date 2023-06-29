@@ -2,6 +2,7 @@ package org.example.client;
 
 import org.example.entity.Group;
 import org.example.entity.Product;
+import org.json.JSONArray;
 import org.json.JSONException;
 
 import java.io.IOException;
@@ -10,6 +11,7 @@ import java.net.URISyntaxException;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+import java.util.LinkedList;
 import java.util.List;
 
 public class HttpAccessor {
@@ -204,12 +206,29 @@ public class HttpAccessor {
         }
     }
 
-    public List<Product> allProducts() {
-        return null;
-    }
-
-    public List<Product> allProductsInGroup(String group_name) {
-        return null;
+    public List<Product> allProducts(String group_name) throws Exception {
+        try {
+            HttpRequest request = HttpRequest.newBuilder()
+                    .uri(new URI(prefix + "/api/goods/all/" + (group_name != null ? group_name : "")))
+                    .header("Authorization", token)
+                    .GET()
+                    .build();
+            HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
+            if (response.statusCode() == 200) {
+                List<Product> list = new LinkedList<>();
+                JSONArray array = new JSONArray(response.body());
+                for (int i = 0; i < array.length(); ++i) {
+                    list.add(new Product(array.getJSONObject(i).toString()));
+                }
+                return list;
+            }
+            if (response.statusCode() == 403)
+                throw new Exception("Unauthorized");
+            throw new Exception(response.body());
+        } catch (JSONException | URISyntaxException | IOException | InterruptedException e) {
+            e.printStackTrace();
+            throw new Exception("Error processing query: see log");
+        }
     }
 
     public List<Group> allGroups() {

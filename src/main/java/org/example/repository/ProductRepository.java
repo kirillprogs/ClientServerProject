@@ -8,9 +8,6 @@ import java.util.List;
 
 public class ProductRepository {
 
-    public static final int SUCCESS = 0;
-    public static final int INSUFFICIENT = 0;
-
     private final Connection connection;
     private final PreparedStatement create_product;
     private final PreparedStatement update_product;

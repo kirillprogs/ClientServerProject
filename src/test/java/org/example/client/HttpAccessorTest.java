@@ -1,6 +1,6 @@
 package org.example.client;
 
-import org.junit.jupiter.api.BeforeAll;
+import org.example.entity.Product;
 import org.junit.jupiter.api.Test;
 
 class HttpAccessorTest {
@@ -22,6 +22,8 @@ class HttpAccessorTest {
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }
+        for (Product product : accessor.allProducts(null))
+            System.out.println(product);
     }
 
     @Test
@@ -32,6 +34,11 @@ class HttpAccessorTest {
         accessor.createGroup("Home", "Utensils");
         accessor.updateGroup("Home", "Home", "Utensils, cutlery and crockery");
         accessor.deleteGroup("Home");
+    }
+
+    @Test
+    void storeTest() {
+
     }
 
     @Test

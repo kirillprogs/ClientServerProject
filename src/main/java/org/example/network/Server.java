@@ -20,7 +20,6 @@ public class Server {
 
     private final ProductController productController;
     private final GroupController groupController;
-    private final StoreController storeController;
     private final UserRepository userRepository;
     private final static String DEFAULT_ROLE = "customer";
 
@@ -28,7 +27,7 @@ public class Server {
         Storage storage = new Storage();
         this.productController = storage.getProductController();
         this.groupController = storage.getGroupController();
-        this.storeController = storage.getStoreController();
+        StoreController storeController = storage.getStoreController();
         this.userRepository = storage.getUserRepository();
 
         HttpServer server = HttpServer.create();
@@ -96,10 +95,8 @@ public class Server {
     private class LoginHandler implements HttpHandler {
         @Override
         public void handle(HttpExchange exchange) {
-            System.out.println("here");
             String username = exchange.getRequestHeaders().getFirst("Username");
             String password = exchange.getRequestHeaders().getFirst("Password");
-            System.out.println(username+" : "+password);////////////////////////////////////////////////////
             if (username == null || password == null) {
                 sendResponse(exchange, 400, LOGIN_INCORRECT);
                 return;
@@ -181,7 +178,6 @@ public class Server {
                     Claims claims = JwtAuthorization.verifyToken(token);
                     String username = claims.getSubject();
                     String password = (String) claims.get("password");
-                    System.out.println("In token: "+username+" : "+password);/////////////////////////////
 
                     User user = userRepository.find_by_name(username);
                     if (!user.getPassword().equals(password))
