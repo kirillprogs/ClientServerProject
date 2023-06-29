@@ -1,5 +1,6 @@
 package org.example.client;
 
+import org.example.entity.Group;
 import org.example.entity.Product;
 import org.junit.jupiter.api.Test;
 
@@ -34,11 +35,16 @@ class HttpAccessorTest {
         accessor.createGroup("Home", "Utensils");
         accessor.updateGroup("Home", "Home", "Utensils, cutlery and crockery");
         accessor.deleteGroup("Home");
+        for (Group group : accessor.allGroups())
+            System.out.println(group);
     }
 
     @Test
-    void storeTest() {
-
+    void storeTest() throws Exception {
+        HttpAccessor accessor = new HttpAccessor();
+        accessor.login("jerry", "abba");
+        System.out.println(accessor.value("Meat")); // sum in Meat
+        System.out.println(accessor.value(null));   // sum in store
     }
 
     @Test

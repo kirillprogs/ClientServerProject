@@ -4,6 +4,7 @@ import org.example.entity.Group;
 import org.example.entity.Product;
 import org.json.JSONArray;
 import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.IOException;
 import java.net.URI;
@@ -217,9 +218,8 @@ public class HttpAccessor {
             if (response.statusCode() == 200) {
                 List<Product> list = new LinkedList<>();
                 JSONArray array = new JSONArray(response.body());
-                for (int i = 0; i < array.length(); ++i) {
+                for (int i = 0; i < array.length(); ++i)
                     list.add(new Product(array.getJSONObject(i).toString()));
-                }
                 return list;
             }
             if (response.statusCode() == 403)
@@ -231,16 +231,47 @@ public class HttpAccessor {
         }
     }
 
-    public List<Group> allGroups() {
-        return null;
+    public List<Group> allGroups() throws Exception {
+        try {
+            HttpRequest request = HttpRequest.newBuilder()
+                    .uri(new URI(prefix + "/api/group/all/"))
+                    .header("Authorization", token)
+                    .GET()
+                    .build();
+            HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
+            if (response.statusCode() == 200) {
+                List<Group> list = new LinkedList<>();
+                JSONArray array = new JSONArray(response.body());
+                for (int i = 0; i < array.length(); ++i)
+                    list.add(new Group(array.getJSONObject(i).toString()));
+                return list;
+            }
+            if (response.statusCode() == 403)
+                throw new Exception("Unauthorized");
+            throw new Exception(response.body());
+        } catch (JSONException | URISyntaxException | IOException | InterruptedException e) {
+            e.printStackTrace();
+            throw new Exception("Error processing query: see log");
+        }
     }
 
-    public double storeValue() {
-        return 0;
-    }
-
-    public double groupValue(String group_name) {
-        return 0;
+    public double value(String group_name) throws Exception {
+        try {
+            HttpRequest request = HttpRequest.newBuilder()
+                    .uri(new URI(prefix + "/api/value/" + (group_name == null ? "store/" : "group/" + group_name)))
+                    .header("Authorization", token)
+                    .GET()
+                    .build();
+            HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
+            if (response.statusCode() == 200)
+                return new JSONObject(response.body()).getDouble("value");
+            if (response.statusCode() == 403)
+                throw new Exception("Unauthorized");
+            throw new Exception(response.body());
+        } catch (JSONException | URISyntaxException | IOException | InterruptedException e) {
+            e.printStackTrace();
+            throw new Exception("Error processing query: see log");
+        }
     }
 
     public void increase(String name, double amount) {
