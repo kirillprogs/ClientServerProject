@@ -55,7 +55,7 @@ const Login = ({ onLogin }) => {
         return (
             <div>
                 <h2>Login</h2>
-                <form onSubmit={handleSubmit}>
+            <form onSubmit={handleSubmit}>
                     <input
                         type="text"
                         name="uname"
@@ -81,13 +81,19 @@ const Login = ({ onLogin }) => {
         );
 };
 
-    const Groups = ({ onLogout }) => {
+async function MyfetchGroups() {
+    const response = await fetch("http://localhost:12369/",
+        {headers: {'Authorization': 'special'}})
+    console.log(await response.json())
+}
+
+const Groups = ({ onLogout }) => {
     const [groups, setGroups] = useState([]);
     const [selectedGroup, setSelectedGroup] = useState(null);
 
     // Fetch groups from the server
     const fetchGroups = () => {
-
+        MyfetchGroups();
         setGroups([
             { id: 1, name: 'Group 1' },
             { id: 2, name: 'Group 2' },
@@ -160,6 +166,7 @@ const Login = ({ onLogin }) => {
         </div>
     );
 };
+
 
 const Products = ({ onLogout }) => {
     const [products, setProducts] = useState([]);
