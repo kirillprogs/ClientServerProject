@@ -9,8 +9,10 @@ import java.util.List;
 
 public class ProductPanel extends JPanel {
 
-    public static JPanel createProductPanel() {
-        JPanel productPanel = new JPanel(new BorderLayout());
+    private JScrollPane scrollPane;
+
+    public ProductPanel() {
+        super(new BorderLayout());
         JButton createButton = new JButton("Create");
         JButton deleteButton = new JButton("Delete");
         JButton updateButton = new JButton("Update");
@@ -28,22 +30,7 @@ public class ProductPanel extends JPanel {
 
         decreaseButton.addActionListener(e -> decreaseAmount(Client.httpAccessor));
 
-        List<Product> products;
-        try {
-            products = Client.httpAccessor.allProducts(null);
-        } catch (Exception e) {
-            JOptionPane.showMessageDialog(null, "Error retrieving products: " + e.getMessage());
-            products = new ArrayList<>();
-        }
-
         backToGroupsButton.addActionListener(e -> Client.cardLayout.show(Client.cardPanel, "group"));
-
-        DefaultListModel<Product> productListModel = new DefaultListModel<>();
-        for (Product product : products) {
-            productListModel.addElement(product);
-        }
-        JList<Product> productList = new JList<>(productListModel);
-        JScrollPane scrollPane = new JScrollPane(productList);
 
         JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
         buttonPanel.add(createButton);
@@ -54,11 +41,27 @@ public class ProductPanel extends JPanel {
 
         Client.setFont(new JComponent[]{createButton, deleteButton, updateButton
                 , increaseButton, decreaseButton, backToGroupsButton});
-        productPanel.add(scrollPane, BorderLayout.CENTER);
-        productPanel.add(buttonPanel, BorderLayout.NORTH);
-        productPanel.add(backToGroupsButton, BorderLayout.SOUTH);
+        add(buttonPanel, BorderLayout.NORTH);
+        add(backToGroupsButton, BorderLayout.SOUTH);
+    }
 
-        return productPanel;
+    public void retrieveAll() {
+        if (scrollPane != null)
+            remove(scrollPane);
+        List<Product> products;
+        try {
+            products = Client.httpAccessor.allProducts(null);
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, "Error retrieving products: " + e.getMessage());
+            products = new ArrayList<>();
+        }
+        DefaultListModel<Product> productListModel = new DefaultListModel<>();
+        for (Product product : products) {
+            productListModel.addElement(product);
+        }
+        JList<Product> productList = new JList<>(productListModel);
+        this.scrollPane = new JScrollPane(productList);
+        add(scrollPane, BorderLayout.CENTER);
     }
 
     private static void createProduct(HttpAccessor accessor) {
@@ -213,7 +216,7 @@ public class ProductPanel extends JPanel {
 
     private static void deleteProduct(HttpAccessor httpAccessor) {
         JFrame frame = new JFrame("Delete Product");
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         JPanel panel = new JPanel();
         panel.setLayout(new GridLayout(2, 2, 10, 10));
 
@@ -250,7 +253,7 @@ public class ProductPanel extends JPanel {
 
     public static void increaseAmount(HttpAccessor accessor) {
         JFrame frame = new JFrame("Increase Amount");
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         JPanel panel = new JPanel();
         panel.setLayout(new GridLayout(2, 2, 10, 10));
 
@@ -285,7 +288,7 @@ public class ProductPanel extends JPanel {
 
     public static void decreaseAmount(HttpAccessor accessor) {
         JFrame frame = new JFrame("Decrease Amount");
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         JPanel panel = new JPanel();
         panel.setLayout(new GridLayout(2, 2, 10, 10));
 

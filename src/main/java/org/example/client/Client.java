@@ -15,12 +15,14 @@ public class Client {
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setSize(900, 700);
         cardPanel = new JPanel();
-        cardLayout = new CardLayout();
+        GroupPanel groupPanel = new GroupPanel();
+        ProductPanel productPanel = new ProductPanel();
+        cardLayout = new PanelSwitcher(productPanel, groupPanel);
         cardPanel.setLayout(cardLayout);
 
         cardPanel.add(createLoginPanel(), "login");
-        cardPanel.add(GroupPanel.createGroupPanel(), "group");
-        cardPanel.add(ProductPanel.createProductPanel(), "product");
+        cardPanel.add(groupPanel, "group");
+        cardPanel.add(productPanel, "product");
 
         frame.add(cardPanel);
         cardLayout.show(cardPanel, "login");
@@ -46,7 +48,7 @@ public class Client {
                 httpAccessor.login(username, new String(password));
                 usernameField.setText("");
                 passwordField.setText("");
-                cardLayout.show(cardPanel, "group");
+                cardLayout.show(cardPanel, "product");
             } catch (Exception ex) {
                 JOptionPane.showMessageDialog(null, ex.getMessage());
             }

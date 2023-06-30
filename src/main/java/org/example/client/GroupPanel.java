@@ -1,20 +1,23 @@
 package org.example.client;
 
+import org.example.entity.Group;
+
 import javax.swing.*;
 import java.awt.*;
+import java.util.ArrayList;
+import java.util.List;
 
-public class GroupPanel {
+public class GroupPanel extends JPanel {
 
-    public static JPanel createGroupPanel() {
+    private JScrollPane scrollPane;
 
-        JPanel groupPanel = new JPanel(new BorderLayout());
-
+    public GroupPanel() {
+        super(new BorderLayout());
         JButton createButton = new JButton("Create");
         JButton deleteButton = new JButton("Delete");
         JButton updateButton = new JButton("Update");
         JButton storeSum = new JButton("Store Sum");
         JButton groupSum = new JButton("Group Sum");
-
         JButton backToProductsButton = new JButton("Back to Products");
 
         createButton.addActionListener(e -> createGroup(Client.httpAccessor));
@@ -44,10 +47,27 @@ public class GroupPanel {
 
         Client.setFont(new JComponent[]{createButton, deleteButton, updateButton
                 , backToProductsButton, storeSum, groupSum});
-        groupPanel.add(buttonsPanel, BorderLayout.CENTER);
-        groupPanel.add(backToProductsButton, BorderLayout.PAGE_END);
+        add(buttonsPanel, BorderLayout.NORTH);
+        add(backToProductsButton, BorderLayout.SOUTH);
+    }
 
-        return groupPanel;
+    public void retrieveAll() {
+        if (scrollPane != null)
+            remove(scrollPane);
+        List<Group> groups;
+        try {
+            groups = Client.httpAccessor.allGroups();
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, "Error retrieving groups: " + e.getMessage());
+            groups = new ArrayList<>();
+        }
+        DefaultListModel<Group> groupListModel = new DefaultListModel<>();
+        for (Group group : groups) {
+            groupListModel.addElement(group);
+        }
+        JList<Group> productList = new JList<>(groupListModel);
+        this.scrollPane = new JScrollPane(productList);
+        add(scrollPane, BorderLayout.CENTER);
     }
 
     private static void createGroup(HttpAccessor accessor) {
