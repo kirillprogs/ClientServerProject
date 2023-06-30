@@ -1,11 +1,14 @@
 package org.example.client;
 
 
+import org.example.entity.Product;
+
 import javax.swing.*;
 import java.awt.*;
 
 
 public class ProductPanel {
+
 
     public static JPanel createProductPanel() {
 
@@ -22,20 +25,21 @@ public class ProductPanel {
 
         //create product
         createButton.addActionListener(e -> {
-            createProduct(null);
+            createProduct(Client.httpAccessor);
         });
 
         //delete product
         deleteButton.addActionListener(e -> {
-            // Logic for deleting a product
+            deleteProduct(Client.httpAccessor);
 
         });
 
         //update something in product
-        updateButton.addActionListener(e -> {
-            // Logic for updating a product
 
-        });
+       /* updateButton.addActionListener(e -> {
+           updateButton(Client.httpAccessor, );
+
+        });*/
 
         //increase quantity in stock
         increaseButton.addActionListener(e -> {
@@ -132,6 +136,55 @@ public class ProductPanel {
         panel.add(groupLabel);
         panel.add(groupField);
         panel.add(createButton);
+        frame.getContentPane().add(panel);
+        frame.setSize(400, 300);
+        frame.setVisible(true);
+    }
+
+    private static void deleteProduct(HttpAccessor httpAccessor) {
+        JFrame frame = new JFrame("Delete Product");
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        JPanel panel = new JPanel();
+        panel.setLayout(new GridLayout(2, 2, 10, 10));
+
+        JLabel nameLabel = new JLabel("Name:");
+        JTextField nameField = new JTextField();
+
+        JButton deleteButton = new JButton("Delete");
+
+        deleteButton.addActionListener(e -> {
+            String name = nameField.getText();
+            try {
+                httpAccessor.deleteProduct(name);
+            } catch (Exception ex) {
+                JOptionPane.showMessageDialog(null, ex.getMessage());
+            }
+        });
+
+        panel.add(nameLabel);
+        panel.add(nameField);
+        panel.add(deleteButton);
+
+        frame.getContentPane().add(panel);
+        frame.setSize(400, 150);
+        frame.setVisible(true);
+    }
+
+
+    private static void updateProduct(HttpAccessor accessor) {
+        JFrame frame = new JFrame("Update Product");
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        JPanel panel = new JPanel();
+        panel.setLayout(new GridLayout(6, 2, 10, 10));
+
+
+        JButton updateButton = new JButton("Update");
+
+        updateButton.addActionListener(e -> {
+
+        });
+
+        panel.add(updateButton);
         frame.getContentPane().add(panel);
         frame.setSize(400, 300);
         frame.setVisible(true);

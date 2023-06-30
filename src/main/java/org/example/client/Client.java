@@ -1,5 +1,9 @@
 package org.example.client;
 
+import org.example.database.Storage;
+import org.example.entity.User;
+import org.example.repository.UserRepository;
+
 import javax.swing.*;
 import java.awt.*;
 
@@ -7,9 +11,9 @@ public class Client {
     private final JFrame frame;
     protected static JPanel cardPanel;
     protected static CardLayout cardLayout;
-    private final HttpAccessor httpAccessor;
+    protected static HttpAccessor httpAccessor;
 
-    public Client() {
+    public Client() throws Exception {
         httpAccessor = new HttpAccessor();
         frame = new JFrame("Warehouse");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -38,8 +42,6 @@ public class Client {
         JPasswordField passwordField = new JPasswordField(10);
 
         JButton loginButton = new JButton("Login");
-
-        Client.setFont(new JComponent[] {usernameLabel, usernameField, passwordLabel, passwordLabel, loginButton});
         loginButton.addActionListener(e -> {
             String username = usernameField.getText();
             char[] password = passwordField.getPassword();
@@ -70,7 +72,8 @@ public class Client {
             component.setFont(new Font("Arial", Font.PLAIN, 18));
     }
 
-    public static void main(String[] args) {
+
+    public static void main(String[] args) throws Exception {
         new Client();
     }
 }
