@@ -7,6 +7,8 @@ import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 
+import static org.example.client.Client.defaultTable;
+
 public class GroupPanel extends JPanel {
 
     private JScrollPane scrollPane;
@@ -66,12 +68,16 @@ public class GroupPanel extends JPanel {
             JOptionPane.showMessageDialog(null, "Error retrieving groups: " + e.getMessage());
             groups = new ArrayList<>();
         }
-        DefaultListModel<Group> groupListModel = new DefaultListModel<>();
+        String[] column = {"Name", "Description"};
+        String[][] info = new String[groups.size()][2];
+        int i = 0;
         for (Group group : groups) {
-            groupListModel.addElement(group);
+            info[i++] = new String[] {group.getName(), group.getDescription()};
         }
-        JList<Group> productList = new JList<>(groupListModel);
-        this.scrollPane = new JScrollPane(productList);
+        JTable table = defaultTable(info,column);
+        this.scrollPane = new JScrollPane(table);
+        this.scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
+        this.scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
         add(scrollPane, BorderLayout.CENTER);
     }
 

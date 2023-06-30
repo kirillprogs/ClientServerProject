@@ -7,6 +7,8 @@ import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 
+import static org.example.client.Client.defaultTable;
+
 public class ProductPanel extends JPanel {
 
     private JScrollPane scrollPane;
@@ -57,12 +59,17 @@ public class ProductPanel extends JPanel {
             JOptionPane.showMessageDialog(null, "Error retrieving products: " + e.getMessage());
             products = new ArrayList<>();
         }
-        DefaultListModel<Product> productListModel = new DefaultListModel<>();
+        String[] column = {"Name", "Group", "Description", "Amount", "Price"};
+        String[][] info = new String[products.size()][5];
+        int i = 0;
         for (Product product : products) {
-            productListModel.addElement(product);
+            info[i++] = new String[] {product.getName(), product.getGroup_name(),
+                    product.getDescription(), "" + product.getAmount(), "" + product.getPrice()};
         }
-        JList<Product> productList = new JList<>(productListModel);
-        this.scrollPane = new JScrollPane(productList);
+        JTable table = defaultTable(info,column);
+        this.scrollPane = new JScrollPane(table);
+        this.scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
+        this.scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
         add(scrollPane, BorderLayout.CENTER);
     }
 

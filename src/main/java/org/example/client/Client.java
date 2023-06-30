@@ -1,6 +1,8 @@
 package org.example.client;
 
 import javax.swing.*;
+import javax.swing.table.DefaultTableCellRenderer;
+import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 
 public class Client {
@@ -69,6 +71,18 @@ public class Client {
     public static void setFont(JComponent[] array) {
         for (JComponent component : array)
             component.setFont(new Font("Arial", Font.PLAIN, 18));
+    }
+
+    public static JTable defaultTable(String[][] info, String[] column){
+        JTable table = new JTable(info, column);
+        DefaultTableModel tableModel = new DefaultTableModel(info, column) {
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                return false;
+            }
+        };
+        table.setModel(tableModel);
+        return table;
     }
 
     public static void main(String[] args) throws Exception {
