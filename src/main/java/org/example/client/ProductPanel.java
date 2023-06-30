@@ -1,7 +1,11 @@
 package org.example.client;
 
+import org.example.entity.Product;
+
 import javax.swing.*;
 import java.awt.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public class ProductPanel extends JPanel {
 
@@ -20,17 +24,26 @@ public class ProductPanel extends JPanel {
 
         updateButton.addActionListener(e -> updateProduct(Client.httpAccessor));
 
-        increaseButton.addActionListener(e -> {
-            increaseAmount(Client.httpAccessor);
+        increaseButton.addActionListener(e -> increaseAmount(Client.httpAccessor));
 
-        });
+        decreaseButton.addActionListener(e -> decreaseAmount(Client.httpAccessor));
 
-        decreaseButton.addActionListener(e -> {
-           decreaseAmount(Client.httpAccessor);
-
-        });
+        List<Product> products;
+        try {
+            products = Client.httpAccessor.allProducts(null);
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, "Error retrieving products: " + e.getMessage());
+            products = new ArrayList<>();
+        }
 
         backToGroupsButton.addActionListener(e -> Client.cardLayout.show(Client.cardPanel, "group"));
+
+        DefaultListModel<Product> productListModel = new DefaultListModel<>();
+        for (Product product : products) {
+            productListModel.addElement(product);
+        }
+        JList<Product> productList = new JList<>(productListModel);
+        JScrollPane scrollPane = new JScrollPane(productList);
 
         JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
         buttonPanel.add(createButton);
@@ -41,8 +54,10 @@ public class ProductPanel extends JPanel {
 
         Client.setFont(new JComponent[]{createButton, deleteButton, updateButton
                 , increaseButton, decreaseButton, backToGroupsButton});
-        productPanel.add(buttonPanel, BorderLayout.CENTER);
-        productPanel.add(backToGroupsButton, BorderLayout.PAGE_END);
+        productPanel.add(scrollPane, BorderLayout.CENTER);
+        productPanel.add(buttonPanel, BorderLayout.NORTH);
+        productPanel.add(backToGroupsButton, BorderLayout.SOUTH);
+
 
         return productPanel;
     }
