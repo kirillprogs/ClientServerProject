@@ -21,10 +21,12 @@ public class ProductPanel extends JPanel {
         updateButton.addActionListener(e -> updateProduct(Client.httpAccessor));
 
         increaseButton.addActionListener(e -> {
+            increaseAmount(Client.httpAccessor);
 
         });
 
         decreaseButton.addActionListener(e -> {
+           decreaseAmount(Client.httpAccessor);
 
         });
 
@@ -231,4 +233,76 @@ public class ProductPanel extends JPanel {
         frame.setSize(400, 150);
         frame.setVisible(true);
     }
+
+    public static void increaseAmount(HttpAccessor accessor) {
+        JFrame frame = new JFrame("Increase Amount");
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        JPanel panel = new JPanel();
+        panel.setLayout(new GridLayout(2, 2, 10, 10));
+
+        JLabel nameLabel = new JLabel("Name:");
+        JTextField nameField = new JTextField();
+
+        JLabel amountLabel = new JLabel("Amount(must be greater than 0):");
+        JTextField amountField = new JTextField();
+
+        JButton increaseButton = new JButton("Increase");
+
+        increaseButton.addActionListener(e -> {
+            String name = nameField.getText();
+            double amount = Double.parseDouble(amountField.getText());
+            try {
+                accessor.change(name, amount);
+            } catch (Exception ex) {
+                JOptionPane.showMessageDialog(null, ex.getMessage());
+            }
+        });
+
+        panel.add(nameLabel);
+        panel.add(nameField);
+        panel.add(amountLabel);
+        panel.add(amountField);
+        panel.add(increaseButton);
+
+        frame.getContentPane().add(panel);
+        frame.setSize(400, 100);
+        frame.setVisible(true);
+    }
+
+
+    public static void decreaseAmount(HttpAccessor accessor) {
+        JFrame frame = new JFrame("Decrease Amount");
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        JPanel panel = new JPanel();
+        panel.setLayout(new GridLayout(2, 2, 10, 10));
+
+        JLabel nameLabel = new JLabel("Name:");
+        JTextField nameField = new JTextField();
+
+        JLabel amountLabel = new JLabel("Amount:");
+        JTextField amountField = new JTextField();
+
+        JButton decreaseButton = new JButton("Decrease");
+
+        decreaseButton.addActionListener(e -> {
+            String name = nameField.getText();
+            double amount = Double.parseDouble(amountField.getText());
+            try {
+                accessor.change(name, -Math.abs(amount));
+            } catch (Exception ex) {
+                JOptionPane.showMessageDialog(null, ex.getMessage());
+            }
+        });
+
+        panel.add(nameLabel);
+        panel.add(nameField);
+        panel.add(amountLabel);
+        panel.add(amountField);
+        panel.add(decreaseButton);
+
+        frame.getContentPane().add(panel);
+        frame.setSize(400, 100);
+        frame.setVisible(true);
+    }
+
 }
