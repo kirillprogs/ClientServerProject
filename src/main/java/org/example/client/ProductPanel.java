@@ -19,39 +19,27 @@ public class ProductPanel {
         JButton decreaseButton = new JButton("Decrease");
         JButton backToGroupsButton = new JButton("Back to Groups");
 
-
-        //create product
         createButton.addActionListener(e -> {
             createProduct(null);
         });
 
-        //delete product
         deleteButton.addActionListener(e -> {
-            // Logic for deleting a product
 
         });
 
-        //update something in product
         updateButton.addActionListener(e -> {
-            // Logic for updating a product
-
+            updateProduct(null);
         });
 
-        //increase quantity in stock
         increaseButton.addActionListener(e -> {
-            // Logic for increasing product quantity
 
         });
 
-        //decrease quantity in stock
         decreaseButton.addActionListener(e -> {
-            // Logic for decreasing product quantity
 
         });
 
-        //return to the page with groups interaction
         backToGroupsButton.addActionListener(e -> Client.cardLayout.show(Client.cardPanel, "group"));
-
 
         JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
         buttonPanel.add(createButton);
@@ -59,7 +47,6 @@ public class ProductPanel {
         buttonPanel.add(updateButton);
         buttonPanel.add(increaseButton);
         buttonPanel.add(decreaseButton);
-
 
         productPanel.add(buttonPanel, BorderLayout.CENTER);
         productPanel.add(backToGroupsButton, BorderLayout.PAGE_END);
@@ -121,6 +108,84 @@ public class ProductPanel {
             amountField.setText("");
             priceField.setText("");
         });
+        panel.add(nameLabel);
+        panel.add(nameField);
+        panel.add(descriptionLabel);
+        panel.add(descriptionField);
+        panel.add(amountLabel);
+        panel.add(amountField);
+        panel.add(priceLabel);
+        panel.add(priceField);
+        panel.add(groupLabel);
+        panel.add(groupField);
+        panel.add(createButton);
+        frame.getContentPane().add(panel);
+        frame.setSize(400, 300);
+        frame.setVisible(true);
+    }
+
+    private static void updateProduct(HttpAccessor accessor) {
+        JFrame frame = new JFrame("Update Product");
+        frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        JPanel panel = new JPanel();
+        panel.setLayout(new GridLayout(7, 2, 10, 10));
+
+        JLabel idLabel = new JLabel("Old name:");
+        JTextField idField = new JTextField();
+
+        JLabel nameLabel = new JLabel("New name:");
+        JTextField nameField = new JTextField();
+
+        JLabel descriptionLabel = new JLabel("Description:");
+        JTextField descriptionField = new JTextField();
+
+        JLabel amountLabel = new JLabel("Amount:");
+        JTextField amountField = new JTextField();
+
+        JLabel priceLabel = new JLabel("Price:");
+        JTextField priceField = new JTextField();
+
+        JLabel groupLabel = new JLabel("Group:");
+        JTextField groupField = new JTextField();
+
+        JButton createButton = new JButton("Create");
+
+        Client.setFont(new JComponent[]{idLabel, idField, nameLabel, nameField, descriptionLabel
+                , descriptionField, amountLabel, amountField, priceLabel, priceField, groupLabel
+                , groupField, createButton});
+        createButton.addActionListener(e -> {
+            if (nameField.getText().isEmpty() || idField.getText().isEmpty()
+                    || descriptionField.getText().isEmpty()
+                    || amountField.getText().isEmpty()
+                    || priceField.getText().isEmpty()
+                    || groupField.getText().isEmpty()) {
+                JOptionPane.showMessageDialog(null, "Please fill out all data");
+                return;
+            }
+            try {
+                String id = nameField.getText();
+                String name = nameField.getText();
+                String description = descriptionField.getText();
+                double amount = Double.parseDouble(amountField.getText());
+                double price = Double.parseDouble(priceField.getText());
+                String group = groupField.getText();
+                try {
+                    accessor.updateProduct(id, name, group, description, amount, price);
+                } catch (Exception ex) {
+                    JOptionPane.showMessageDialog(null, ex.getMessage());
+                }
+            } catch (NumberFormatException ex) {
+                JOptionPane.showMessageDialog(null, "Incorrect numeric format");
+            }
+            idField.setText("");
+            nameField.setText("");
+            descriptionField.setText("");
+            groupField.setText("");
+            amountField.setText("");
+            priceField.setText("");
+        });
+        panel.add(idLabel);
+        panel.add(idField);
         panel.add(nameLabel);
         panel.add(nameField);
         panel.add(descriptionLabel);
