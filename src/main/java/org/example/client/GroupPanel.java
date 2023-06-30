@@ -128,8 +128,4 @@ public class GroupPanel {
         frame.setSize(400, 150);
         frame.setVisible(true);
     }
-
-
-
-
 }

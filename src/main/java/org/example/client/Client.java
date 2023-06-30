@@ -71,8 +71,6 @@ public class Client {
         for (JComponent component : array)
             component.setFont(new Font("Arial", Font.PLAIN, 18));
     }
-
-
     public static void main(String[] args) throws Exception {
         new Client();
     }
