@@ -1,9 +1,5 @@
 package org.example.client;
 
-import org.example.database.Storage;
-import org.example.entity.User;
-import org.example.repository.UserRepository;
-
 import javax.swing.*;
 import java.awt.*;
 
@@ -13,7 +9,7 @@ public class Client {
     protected static CardLayout cardLayout;
     protected static HttpAccessor httpAccessor;
 
-    public Client() throws Exception {
+    public Client() {
         httpAccessor = new HttpAccessor();
         frame = new JFrame("Warehouse");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);

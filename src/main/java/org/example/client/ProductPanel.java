@@ -58,7 +58,6 @@ public class ProductPanel extends JPanel {
         productPanel.add(buttonPanel, BorderLayout.NORTH);
         productPanel.add(backToGroupsButton, BorderLayout.SOUTH);
 
-
         return productPanel;
     }
 
