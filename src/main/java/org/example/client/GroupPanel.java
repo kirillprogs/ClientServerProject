@@ -1,5 +1,7 @@
 package org.example.client;
 
+import org.example.entity.Group;
+
 import javax.swing.*;
 import java.awt.*;
 
@@ -14,6 +16,7 @@ public class GroupPanel {
         JButton updateButton = new JButton("Update");
         JButton storeSum = new JButton("Store Sum");
         JButton groupSum = new JButton("Group Sum");
+        JButton findGroup = new JButton("Find Group");
 
         JButton backToProductsButton = new JButton("Back to Products");
 
@@ -22,6 +25,7 @@ public class GroupPanel {
         deleteButton.addActionListener(e -> deleteGroup(Client.httpAccessor));
 
         updateButton.addActionListener(e -> updateGroup(Client.httpAccessor));
+        findGroup.addActionListener(e -> findGroup(Client.httpAccessor));
 
         storeSum.addActionListener(e -> {
             try {
@@ -41,9 +45,10 @@ public class GroupPanel {
         buttonsPanel.add(updateButton);
         buttonsPanel.add(storeSum);
         buttonsPanel.add(groupSum);
+        buttonsPanel.add(findGroup);
 
         Client.setFont(new JComponent[]{createButton, deleteButton, updateButton
-                , backToProductsButton, storeSum, groupSum});
+                , backToProductsButton, storeSum, groupSum, findGroup});
         groupPanel.add(buttonsPanel, BorderLayout.CENTER);
         groupPanel.add(backToProductsButton, BorderLayout.PAGE_END);
 
@@ -217,4 +222,34 @@ public class GroupPanel {
         frame.setSize(400, 200);
         frame.setVisible(true);
     }
+
+    public static void findGroup(HttpAccessor accessor) {
+        try {
+            String name = JOptionPane.showInputDialog("Enter group name:");
+            Group group = accessor.findGroupId(name);
+            if (group != null) {
+                JFrame frame = new JFrame("Group Information");
+                JPanel panel = new JPanel(new GridLayout(0, 2));
+
+                JLabel nameLabel = new JLabel("Name:");
+                JLabel nameValueLabel = new JLabel(group.getName());
+                JLabel descriptionLabel = new JLabel("Description:");
+                JLabel descriptionValueLabel = new JLabel(group.getDescription());
+
+                panel.add(nameLabel);
+                panel.add(nameValueLabel);
+                panel.add(descriptionLabel);
+                panel.add(descriptionValueLabel);
+
+                frame.getContentPane().add(panel);
+                frame.pack();
+                frame.setVisible(true);
+            } else {
+                JOptionPane.showMessageDialog(null, "Group not found.");
+            }
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, "Error finding group: " + e.getMessage());
+        }
+    }
+
 }
