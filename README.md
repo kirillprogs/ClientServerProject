@@ -1,5 +1,5 @@
 # Final Project for Client-Server Applications course
-Created by Kyrylo Pervushyn & Mariia Verbytska, June 2023
+### Created by Kyrylo Pervushyn & Mariia Verbytska, June 2023
 
 Автоматизоване робоче місце.
 
