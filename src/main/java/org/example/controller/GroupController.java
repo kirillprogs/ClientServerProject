@@ -48,7 +48,6 @@ public class GroupController {
             Group found = repository.find_by_name(group.getName());
             if (found != null) {
                 if (!change || !found.getName().equals(array[3])) {
-                    System.out.println(array[3]);
                     Server.sendResponse(exchange, 401, "Group with the same name already exists");
                     return;
                 }
@@ -64,7 +63,6 @@ public class GroupController {
                 repository.update(array[3], group);
             else
                 repository.create(group);
-            System.out.println("id: "+array[3]+" name: "+group.getName()+" description: "+group.getDescription());
             Server.sendResponse(exchange, 204);
         } catch (JSONException e) {
             Server.sendResponse(exchange, 501, Response.JSON_FORMAT_ERROR);
