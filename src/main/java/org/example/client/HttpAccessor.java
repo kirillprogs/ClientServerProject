@@ -302,15 +302,41 @@ public class HttpAccessor {
         }
     }
 
-    public void decrease(String name, double amount) {
-
-    }
-
     public List<Product> search(List<String> group_ids, String name_pattern,
                                 String description_pattern,
                                 double amount_lower, double amount_upper,
-                                double price_lower, double price_upper) {
-
-        return null;
+                                double price_lower, double price_upper) throws Exception {
+        try {
+            JSONObject json = new JSONObject()
+                    .put("name", name_pattern).put("description", description_pattern)
+                    .put("amount_lower", amount_lower).put("amount_upper", amount_upper)
+                    .put("price_lower", price_lower).put("price_upper", price_upper);
+            if (group_ids != null) {
+                JSONArray groupArray = new JSONArray();
+                for (String name : group_ids)
+                    groupArray.put(name);
+                json.put("groups", groupArray);
+            }
+            String toSend = json.toString();
+            HttpRequest request = HttpRequest.newBuilder()
+                    .uri(new URI(prefix + "/api/search/"))
+                    .header("Authorization", token)
+                    .POST(HttpRequest.BodyPublishers.ofString(toSend))
+                    .build();
+            HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
+            if (response.statusCode() == 200) {
+                List<Product> list = new LinkedList<>();
+                JSONArray array = new JSONArray(response.body());
+                for (int i = 0; i < array.length(); ++i)
+                    list.add(new Product(array.getJSONObject(i).toString()));
+                return list;
+            }
+            if (response.statusCode() == 403)
+                throw new Exception("Unauthorized");
+            throw new Exception(response.body());
+        } catch (JSONException | URISyntaxException | IOException | InterruptedException e) {
+            e.printStackTrace();
+            throw new Exception("Error processing query: see log");
+        }
     }
 }

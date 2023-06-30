@@ -4,6 +4,9 @@ import org.example.entity.Group;
 import org.example.entity.Product;
 import org.junit.jupiter.api.Test;
 
+import java.util.LinkedList;
+import java.util.List;
+
 class HttpAccessorTest {
 
     @Test
@@ -25,6 +28,11 @@ class HttpAccessorTest {
         }
         for (Product product : accessor.allProducts(null))
             System.out.println(product);
+        System.out.println(accessor.findProductId("Beef"));
+        accessor.change("Beef", 4);
+        System.out.println(accessor.findProductId("Beef"));
+        accessor.change("Beef", -3);
+        System.out.println(accessor.findProductId("Beef"));
     }
 
     @Test
@@ -48,12 +56,13 @@ class HttpAccessorTest {
     }
 
     @Test
-    void valueTest() {
-
-    }
-
-    @Test
-    void searchTest() {
-
+    void searchTest() throws Exception {
+        HttpAccessor accessor = new HttpAccessor();
+        accessor.login("jerry", "abba");
+        List<String> group_ids = new LinkedList<>();
+        group_ids.add("Meat");
+        for (Product product : accessor.search(group_ids, "Po%", "%"
+                , -1, -1, -1, -1))
+            System.out.println(product);
     }
 }
