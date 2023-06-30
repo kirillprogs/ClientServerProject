@@ -69,7 +69,7 @@ public class ProductPanel {
 
     private static void createProduct(HttpAccessor accessor) {
         JFrame frame = new JFrame("Create Product");
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         JPanel panel = new JPanel();
         panel.setLayout(new GridLayout(6, 2, 10, 10));
 
@@ -90,17 +90,36 @@ public class ProductPanel {
 
         JButton createButton = new JButton("Create");
 
+        Client.setFont(new JComponent[]{nameLabel, nameField, descriptionLabel, descriptionField,
+                        amountLabel, amountField, priceLabel, priceField, groupLabel, groupField, createButton});
         createButton.addActionListener(e -> {
-            String name = nameField.getText();
-            String description = descriptionField.getText();
-            double amount = Double.parseDouble(amountField.getText());
-            double price = Double.parseDouble(priceField.getText());
-            String group = groupField.getText();
-            try {
-                accessor.createProduct(name, group, description, amount, price);
-            } catch (Exception ex) {
-                JOptionPane.showMessageDialog(null, ex.getMessage());
+            if (nameField.getText().isEmpty()
+                    || descriptionField.getText().isEmpty()
+                    || amountField.getText().isEmpty()
+                    || priceField.getText().isEmpty()
+                    || groupField.getText().isEmpty()) {
+                JOptionPane.showMessageDialog(null, "Please fill out all data");
+                return;
             }
+            try {
+                String name = nameField.getText();
+                String description = descriptionField.getText();
+                double amount = Double.parseDouble(amountField.getText());
+                double price = Double.parseDouble(priceField.getText());
+                String group = groupField.getText();
+                try {
+                    accessor.createProduct(name, group, description, amount, price);
+                } catch (Exception ex) {
+                    JOptionPane.showMessageDialog(null, ex.getMessage());
+                }
+            } catch (NumberFormatException ex) {
+                JOptionPane.showMessageDialog(null, "Incorrect numeric format");
+            }
+            nameField.setText("");
+            descriptionField.setText("");
+            groupField.setText("");
+            amountField.setText("");
+            priceField.setText("");
         });
         panel.add(nameLabel);
         panel.add(nameField);

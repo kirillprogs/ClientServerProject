@@ -38,6 +38,8 @@ public class Client {
         JPasswordField passwordField = new JPasswordField(10);
 
         JButton loginButton = new JButton("Login");
+
+        Client.setFont(new JComponent[] {usernameLabel, usernameField, passwordLabel, passwordLabel, loginButton});
         loginButton.addActionListener(e -> {
             String username = usernameField.getText();
             char[] password = passwordField.getPassword();
@@ -61,6 +63,11 @@ public class Client {
         loginPanel.add(inputPanel, BorderLayout.CENTER);
 
         return loginPanel;
+    }
+
+    public static void setFont(JComponent[] array) {
+        for (JComponent component : array)
+            component.setFont(new Font("Arial", Font.PLAIN, 18));
     }
 
     public static void main(String[] args) {

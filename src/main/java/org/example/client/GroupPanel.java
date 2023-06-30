@@ -1,10 +1,7 @@
 package org.example.client;
 
-import org.json.JSONObject;
-
 import javax.swing.*;
 import java.awt.*;
-import java.net.http.HttpClient;
 
 
 public class GroupPanel {
