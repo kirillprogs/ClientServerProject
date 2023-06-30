@@ -16,6 +16,7 @@ public class ProductPanel extends JPanel {
         JButton updateButton = new JButton("Update");
         JButton increaseButton = new JButton("Increase");
         JButton decreaseButton = new JButton("Decrease");
+        JButton findProductButton = new JButton("Find");
         JButton backToGroupsButton = new JButton("Back to Groups");
 
         createButton.addActionListener(e -> createProduct(Client.httpAccessor));
@@ -27,6 +28,7 @@ public class ProductPanel extends JPanel {
         increaseButton.addActionListener(e -> increaseAmount(Client.httpAccessor));
 
         decreaseButton.addActionListener(e -> decreaseAmount(Client.httpAccessor));
+        findProductButton.addActionListener(e -> findProduct(Client.httpAccessor));
 
         List<Product> products;
         try {
@@ -51,9 +53,10 @@ public class ProductPanel extends JPanel {
         buttonPanel.add(updateButton);
         buttonPanel.add(increaseButton);
         buttonPanel.add(decreaseButton);
+        buttonPanel.add(findProductButton);
 
         Client.setFont(new JComponent[]{createButton, deleteButton, updateButton
-                , increaseButton, decreaseButton, backToGroupsButton});
+                , increaseButton, decreaseButton, backToGroupsButton, findProductButton});
         productPanel.add(scrollPane, BorderLayout.CENTER);
         productPanel.add(buttonPanel, BorderLayout.NORTH);
         productPanel.add(backToGroupsButton, BorderLayout.SOUTH);
@@ -316,5 +319,40 @@ public class ProductPanel extends JPanel {
         frame.getContentPane().add(panel);
         frame.setSize(400, 100);
         frame.setVisible(true);
+    }
+
+    public static void findProduct(HttpAccessor accessor) {
+        try {
+            String name = JOptionPane.showInputDialog("Enter product name:");
+            Product product = accessor.findProductId(name);
+            if (product != null) {
+
+                JFrame frame = new JFrame("Product Info");
+                frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+                JPanel panel = new JPanel(new GridLayout(0, 2, 10, 10));
+
+
+                panel.add(new JLabel("Name:"));
+                panel.add(new JLabel(product.getName()));
+                panel.add(new JLabel("Description:"));
+                panel.add(new JLabel(product.getDescription()));
+                panel.add(new JLabel("Amount:"));
+                panel.add(new JLabel(String.valueOf(product.getAmount())));
+                panel.add(new JLabel("Price:"));
+                panel.add(new JLabel(String.valueOf(product.getPrice())));
+                panel.add(new JLabel("Group:"));
+                panel.add(new JLabel(product.getGroup_name()));
+
+                frame.getContentPane().add(panel);
+                frame.pack();
+                frame.setVisible(true);
+            } else {
+
+                JOptionPane.showMessageDialog(null, "Product not found.");
+            }
+        } catch (Exception e) {
+
+            JOptionPane.showMessageDialog(null, "Error finding product: " + e.getMessage());
+        }
     }
 }
