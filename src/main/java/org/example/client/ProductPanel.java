@@ -1,19 +1,12 @@
 package org.example.client;
 
-
-import org.example.entity.Product;
-
 import javax.swing.*;
 import java.awt.*;
 
-
-public class ProductPanel {
+public class ProductPanel extends JPanel {
 
     public static JPanel createProductPanel() {
-
         JPanel productPanel = new JPanel(new BorderLayout());
-
-
         JButton createButton = new JButton("Create");
         JButton deleteButton = new JButton("Delete");
         JButton updateButton = new JButton("Update");
@@ -21,18 +14,11 @@ public class ProductPanel {
         JButton decreaseButton = new JButton("Decrease");
         JButton backToGroupsButton = new JButton("Back to Groups");
 
-        createButton.addActionListener(e -> {
-            createProduct(Client.httpAccessor);
-        });
+        createButton.addActionListener(e -> createProduct(Client.httpAccessor));
 
-        deleteButton.addActionListener(e -> {
-            deleteProduct(Client.httpAccessor);
+        deleteButton.addActionListener(e -> deleteProduct(Client.httpAccessor));
 
-        });
-
-        updateButton.addActionListener(e -> {
-            updateProduct(null);
-        });
+        updateButton.addActionListener(e -> updateProduct(Client.httpAccessor));
 
         increaseButton.addActionListener(e -> {
 
@@ -51,6 +37,8 @@ public class ProductPanel {
         buttonPanel.add(increaseButton);
         buttonPanel.add(decreaseButton);
 
+        Client.setFont(new JComponent[]{createButton, deleteButton, updateButton
+                , increaseButton, decreaseButton, backToGroupsButton});
         productPanel.add(buttonPanel, BorderLayout.CENTER);
         productPanel.add(backToGroupsButton, BorderLayout.PAGE_END);
 
@@ -88,7 +76,7 @@ public class ProductPanel {
                     || amountField.getText().isEmpty()
                     || priceField.getText().isEmpty()
                     || groupField.getText().isEmpty()) {
-                JOptionPane.showMessageDialog(null, "Please fill out all data");
+                JOptionPane.showMessageDialog(null, "Please fill in all values");
                 return;
             }
             try {
@@ -99,17 +87,18 @@ public class ProductPanel {
                 String group = groupField.getText();
                 try {
                     accessor.createProduct(name, group, description, amount, price);
+                    JOptionPane.showMessageDialog(null, "Successfully created");
+                    nameField.setText("");
+                    descriptionField.setText("");
+                    groupField.setText("");
+                    amountField.setText("");
+                    priceField.setText("");
                 } catch (Exception ex) {
                     JOptionPane.showMessageDialog(null, ex.getMessage());
                 }
             } catch (NumberFormatException ex) {
                 JOptionPane.showMessageDialog(null, "Incorrect numeric format");
             }
-            nameField.setText("");
-            descriptionField.setText("");
-            groupField.setText("");
-            amountField.setText("");
-            priceField.setText("");
         });
         panel.add(nameLabel);
         panel.add(nameField);
@@ -162,7 +151,7 @@ public class ProductPanel {
                     || amountField.getText().isEmpty()
                     || priceField.getText().isEmpty()
                     || groupField.getText().isEmpty()) {
-                JOptionPane.showMessageDialog(null, "Please fill out all data");
+                JOptionPane.showMessageDialog(null, "Please fill in all values");
                 return;
             }
             try {
@@ -174,18 +163,19 @@ public class ProductPanel {
                 String group = groupField.getText();
                 try {
                     accessor.updateProduct(id, name, group, description, amount, price);
+                    JOptionPane.showMessageDialog(null, "Successfully updated");
+                    idField.setText("");
+                    nameField.setText("");
+                    descriptionField.setText("");
+                    groupField.setText("");
+                    amountField.setText("");
+                    priceField.setText("");
                 } catch (Exception ex) {
                     JOptionPane.showMessageDialog(null, ex.getMessage());
                 }
             } catch (NumberFormatException ex) {
                 JOptionPane.showMessageDialog(null, "Incorrect numeric format");
             }
-            idField.setText("");
-            nameField.setText("");
-            descriptionField.setText("");
-            groupField.setText("");
-            amountField.setText("");
-            priceField.setText("");
         });
         panel.add(idLabel);
         panel.add(idField);
@@ -216,10 +206,18 @@ public class ProductPanel {
 
         JButton deleteButton = new JButton("Delete");
 
+        Client.setFont(new JComponent[]{nameLabel, nameField, deleteButton});
+
         deleteButton.addActionListener(e -> {
+            if (nameField.getText().isEmpty()) {
+                JOptionPane.showMessageDialog(null, "Please fill in all values");
+                return;
+            }
             String name = nameField.getText();
             try {
                 httpAccessor.deleteProduct(name);
+                JOptionPane.showMessageDialog(null, "Successfully deleted");
+                nameField.setText("");
             } catch (Exception ex) {
                 JOptionPane.showMessageDialog(null, ex.getMessage());
             }

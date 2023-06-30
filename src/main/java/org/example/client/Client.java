@@ -42,17 +42,18 @@ public class Client {
         JPasswordField passwordField = new JPasswordField(10);
 
         JButton loginButton = new JButton("Login");
+        setFont(new JComponent[]{usernameLabel, usernameField, passwordLabel, passwordField, loginButton});
         loginButton.addActionListener(e -> {
             String username = usernameField.getText();
             char[] password = passwordField.getPassword();
             try {
                 httpAccessor.login(username, new String(password));
+                usernameField.setText("");
+                passwordField.setText("");
                 cardLayout.show(cardPanel, "group");
             } catch (Exception ex) {
                 JOptionPane.showMessageDialog(null, ex.getMessage());
             }
-            usernameField.setText("");
-            passwordField.setText("");
         });
 
         inputPanel.add(usernameLabel);
@@ -71,7 +72,6 @@ public class Client {
         for (JComponent component : array)
             component.setFont(new Font("Arial", Font.PLAIN, 18));
     }
-
 
     public static void main(String[] args) throws Exception {
         new Client();

@@ -59,6 +59,13 @@ public class ProductController {
                     return;
                 }
             }
+            if (change) {
+                Product found1 = repository.find_by_name(array[3]);
+                if (found1 == null) {
+                    Server.sendResponse(exchange, 404, "No product with this id");
+                    return;
+                }
+            }
             Group group = groupRepository.find_by_name(product.getGroup_name());
             if (group == null) {
                 Server.sendResponse(exchange, 401, "Cannot create product: no such group");
