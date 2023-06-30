@@ -27,6 +27,7 @@ public class GroupPanel extends JPanel {
         deleteButton.addActionListener(e -> deleteGroup(Client.httpAccessor));
 
         updateButton.addActionListener(e -> updateGroup(Client.httpAccessor));
+
         findGroup.addActionListener(e -> findGroup(Client.httpAccessor));
 
         storeSum.addActionListener(e -> {
@@ -72,6 +73,7 @@ public class GroupPanel extends JPanel {
         JList<Group> productList = new JList<>(groupListModel);
         this.scrollPane = new JScrollPane(productList);
         add(scrollPane, BorderLayout.CENTER);
+    }
 
     private static void createGroup(HttpAccessor accessor) {
         JFrame frame = new JFrame("Create Group");
