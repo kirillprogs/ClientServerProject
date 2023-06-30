@@ -157,7 +157,7 @@ public class ProductPanel extends JPanel {
                 return;
             }
             try {
-                String id = nameField.getText();
+                String id = idField.getText();
                 String name = nameField.getText();
                 String description = descriptionField.getText();
                 double amount = Double.parseDouble(amountField.getText());
