@@ -229,6 +229,7 @@ public class GroupPanel {
             Group group = accessor.findGroupId(name);
             if (group != null) {
                 JFrame frame = new JFrame("Group Information");
+                frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
                 JPanel panel = new JPanel(new GridLayout(0, 2));
 
                 JLabel nameLabel = new JLabel("Name:");

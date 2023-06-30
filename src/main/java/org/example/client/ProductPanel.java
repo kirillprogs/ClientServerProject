@@ -253,7 +253,7 @@ public class ProductPanel extends JPanel {
 
     public static void increaseAmount(HttpAccessor accessor) {
         JFrame frame = new JFrame("Increase Amount");
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         JPanel panel = new JPanel();
         panel.setLayout(new GridLayout(2, 2, 10, 10));
 
@@ -288,7 +288,7 @@ public class ProductPanel extends JPanel {
 
     public static void decreaseAmount(HttpAccessor accessor) {
         JFrame frame = new JFrame("Decrease Amount");
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         JPanel panel = new JPanel();
         panel.setLayout(new GridLayout(2, 2, 10, 10));
 
