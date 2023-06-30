@@ -283,7 +283,6 @@ public class ProductPanel extends JPanel {
         frame.setVisible(true);
     }
 
-
     public static void decreaseAmount(HttpAccessor accessor) {
         JFrame frame = new JFrame("Decrease Amount");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -318,5 +317,4 @@ public class ProductPanel extends JPanel {
         frame.setSize(400, 100);
         frame.setVisible(true);
     }
-
 }
