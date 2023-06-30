@@ -1,6 +1,8 @@
 package org.example.client;
 
 
+import org.example.entity.Product;
+
 import javax.swing.*;
 import java.awt.*;
 
@@ -20,10 +22,11 @@ public class ProductPanel {
         JButton backToGroupsButton = new JButton("Back to Groups");
 
         createButton.addActionListener(e -> {
-            createProduct(null);
+            createProduct(Client.httpAccessor);
         });
 
         deleteButton.addActionListener(e -> {
+            deleteProduct(Client.httpAccessor);
 
         });
 
@@ -199,6 +202,35 @@ public class ProductPanel {
         panel.add(createButton);
         frame.getContentPane().add(panel);
         frame.setSize(400, 300);
+        frame.setVisible(true);
+    }
+
+    private static void deleteProduct(HttpAccessor httpAccessor) {
+        JFrame frame = new JFrame("Delete Product");
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        JPanel panel = new JPanel();
+        panel.setLayout(new GridLayout(2, 2, 10, 10));
+
+        JLabel nameLabel = new JLabel("Name:");
+        JTextField nameField = new JTextField();
+
+        JButton deleteButton = new JButton("Delete");
+
+        deleteButton.addActionListener(e -> {
+            String name = nameField.getText();
+            try {
+                httpAccessor.deleteProduct(name);
+            } catch (Exception ex) {
+                JOptionPane.showMessageDialog(null, ex.getMessage());
+            }
+        });
+
+        panel.add(nameLabel);
+        panel.add(nameField);
+        panel.add(deleteButton);
+
+        frame.getContentPane().add(panel);
+        frame.setSize(400, 150);
         frame.setVisible(true);
     }
 }
