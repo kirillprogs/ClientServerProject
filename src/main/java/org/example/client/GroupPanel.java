@@ -12,6 +12,9 @@ public class GroupPanel {
         JButton createButton = new JButton("Create");
         JButton deleteButton = new JButton("Delete");
         JButton updateButton = new JButton("Update");
+        JButton storeSum = new JButton("Store Sum");
+        JButton groupSum = new JButton("Group Sum");
+
         JButton backToProductsButton = new JButton("Back to Products");
 
         createButton.addActionListener(e -> createGroup(Client.httpAccessor));
@@ -20,14 +23,27 @@ public class GroupPanel {
 
         updateButton.addActionListener(e -> updateGroup(Client.httpAccessor));
 
+        storeSum.addActionListener(e -> {
+            try {
+                double value = Client.httpAccessor.value(null);
+                JOptionPane.showMessageDialog(null, "Total value in store: " + value);
+            } catch (Exception ex) {
+                JOptionPane.showMessageDialog(null, ex.getMessage());
+            }});
+
+        groupSum.addActionListener(e ->groupSum(Client.httpAccessor));
+
         backToProductsButton.addActionListener(e -> Client.cardLayout.show(Client.cardPanel, "product"));
 
         JPanel buttonsPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
         buttonsPanel.add(createButton);
         buttonsPanel.add(deleteButton);
         buttonsPanel.add(updateButton);
+        buttonsPanel.add(storeSum);
+        buttonsPanel.add(groupSum);
 
-        Client.setFont(new JComponent[]{createButton, deleteButton, updateButton, backToProductsButton});
+        Client.setFont(new JComponent[]{createButton, deleteButton, updateButton
+                , backToProductsButton, storeSum, groupSum});
         groupPanel.add(buttonsPanel, BorderLayout.CENTER);
         groupPanel.add(backToProductsButton, BorderLayout.PAGE_END);
 
@@ -159,6 +175,42 @@ public class GroupPanel {
         panel.add(nameField);
         panel.add(descriptionLabel);
         panel.add(descriptionField);
+        panel.add(createButton);
+
+        frame.getContentPane().add(panel);
+        frame.setSize(400, 200);
+        frame.setVisible(true);
+    }
+
+    private static void groupSum(HttpAccessor accessor) {
+        JFrame frame = new JFrame("Group Sum");
+        frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        JPanel panel = new JPanel();
+        panel.setLayout(new GridLayout(2, 2, 10, 10));
+
+        JLabel idLabel = new JLabel("Group name:");
+        JTextField idField = new JTextField();
+
+        JButton createButton = new JButton("Calculate");
+
+        Client.setFont(new JComponent[]{idLabel, idField, createButton});
+        createButton.addActionListener(e -> {
+            if (idField.getText().isEmpty()) {
+                JOptionPane.showMessageDialog(null, "Please fill in all values");
+                return;
+            }
+            String id = idField.getText();
+            try {
+                double value = accessor.value(id);
+                JOptionPane.showMessageDialog(null, "Total price: " + value);
+                idField.setText("");
+            } catch (Exception ex) {
+                JOptionPane.showMessageDialog(null, ex.getMessage());
+            }
+        });
+
+        panel.add(idLabel);
+        panel.add(idField);
         panel.add(createButton);
 
         frame.getContentPane().add(panel);
