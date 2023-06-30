@@ -22,8 +22,7 @@ public class ProductPanel {
 
         //create product
         createButton.addActionListener(e -> {
-
-
+            createProduct(null);
         });
 
         //delete product
@@ -66,5 +65,56 @@ public class ProductPanel {
         productPanel.add(backToGroupsButton, BorderLayout.PAGE_END);
 
         return productPanel;
+    }
+
+    private static void createProduct(HttpAccessor accessor) {
+        JFrame frame = new JFrame("Create Product");
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        JPanel panel = new JPanel();
+        panel.setLayout(new GridLayout(6, 2, 10, 10));
+
+        JLabel nameLabel = new JLabel("Name:");
+        JTextField nameField = new JTextField();
+
+        JLabel descriptionLabel = new JLabel("Description:");
+        JTextField descriptionField = new JTextField();
+
+        JLabel amountLabel = new JLabel("Amount:");
+        JTextField amountField = new JTextField();
+
+        JLabel priceLabel = new JLabel("Price:");
+        JTextField priceField = new JTextField();
+
+        JLabel groupLabel = new JLabel("Group:");
+        JTextField groupField = new JTextField();
+
+        JButton createButton = new JButton("Create");
+
+        createButton.addActionListener(e -> {
+            String name = nameField.getText();
+            String description = descriptionField.getText();
+            double amount = Double.parseDouble(amountField.getText());
+            double price = Double.parseDouble(priceField.getText());
+            String group = groupField.getText();
+            try {
+                accessor.createProduct(name, group, description, amount, price);
+            } catch (Exception ex) {
+                JOptionPane.showMessageDialog(null, ex.getMessage());
+            }
+        });
+        panel.add(nameLabel);
+        panel.add(nameField);
+        panel.add(descriptionLabel);
+        panel.add(descriptionField);
+        panel.add(amountLabel);
+        panel.add(amountField);
+        panel.add(priceLabel);
+        panel.add(priceField);
+        panel.add(groupLabel);
+        panel.add(groupField);
+        panel.add(createButton);
+        frame.getContentPane().add(panel);
+        frame.setSize(400, 300);
+        frame.setVisible(true);
     }
 }

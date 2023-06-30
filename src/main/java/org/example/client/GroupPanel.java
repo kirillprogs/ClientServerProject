@@ -1,8 +1,10 @@
 package org.example.client;
 
-import javax.swing.JButton;
-import javax.swing.JPanel;
+import org.json.JSONObject;
+
+import javax.swing.*;
 import java.awt.*;
+import java.net.http.HttpClient;
 
 
 public class GroupPanel {
@@ -46,4 +48,3 @@ public class GroupPanel {
         return groupPanel;
     }
 }
-
