@@ -5,12 +5,12 @@ import java.awt.*;
 
 public class Client {
     private final JFrame frame;
-    protected static  JPanel cardPanel;
+    protected static JPanel cardPanel;
     protected static CardLayout cardLayout;
-    private final Controller controller;
+    private final HttpAccessor httpAccessor;
 
     public Client() {
-        controller = new Controller();
+        httpAccessor = new HttpAccessor();
         frame = new JFrame("Warehouse");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setSize(900, 700);
@@ -41,10 +41,12 @@ public class Client {
         loginButton.addActionListener(e -> {
             String username = usernameField.getText();
             char[] password = passwordField.getPassword();
-            if (controller.login(username, password) == 0)
+            try {
+                httpAccessor.login(username, new String(password));
                 cardLayout.show(cardPanel, "group");
-            else
-                JOptionPane.showMessageDialog(frame, "Invalid username or password", "Login Error", JOptionPane.ERROR_MESSAGE);
+            } catch (Exception ex) {
+                JOptionPane.showMessageDialog(null, ex.getMessage());
+            }
             usernameField.setText("");
             passwordField.setText("");
         });

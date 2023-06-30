@@ -18,12 +18,16 @@ import java.util.List;
 public class HttpAccessor {
 
     private final HttpClient httpClient;
-    private String token = "def";
+    private String token = "";
     private final String prefix;
 
     public HttpAccessor() {
         httpClient = HttpClient.newHttpClient();
         prefix = "http://localhost:12369";
+    }
+
+    public void logout() {
+        this.token = "";
     }
 
     public void login(String username, String password) throws Exception {
@@ -34,6 +38,8 @@ public class HttpAccessor {
                     .header("Password", password)
                     .build();
             HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
+            if (response.statusCode() != 200)
+                throw new Exception(response.body());
             token = response.body();
         } catch (URISyntaxException | IOException | InterruptedException e) {
             e.printStackTrace();
@@ -274,8 +280,26 @@ public class HttpAccessor {
         }
     }
 
-    public void increase(String name, double amount) {
-
+    public void change(String name, double amount) throws Exception {
+        try {
+            String toSend = new JSONObject()
+                    .put("name", name).put("amount", Math.abs(amount))
+                    .toString();
+            HttpRequest request = HttpRequest.newBuilder()
+                    .uri(new URI(prefix + "/api/operate/" + (amount >= 0 ? "increase/" : "decrease/")))
+                    .header("Authorization", token)
+                    .POST(HttpRequest.BodyPublishers.ofString(toSend))
+                    .build();
+            HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
+            if (response.statusCode() == 204)
+                return;
+            if (response.statusCode() == 403)
+                throw new Exception("Unauthorized");
+            throw new Exception(response.body());
+        } catch (JSONException | URISyntaxException | IOException | InterruptedException e) {
+            e.printStackTrace();
+            throw new Exception("Error processing query: see log");
+        }
     }
 
     public void decrease(String name, double amount) {
