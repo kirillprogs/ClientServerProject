@@ -42,9 +42,10 @@ public class ProductPanel extends JPanel {
         buttonPanel.add(updateButton);
         buttonPanel.add(increaseButton);
         buttonPanel.add(decreaseButton);
+        buttonPanel.add(findProductButton);
 
         Client.setFont(new JComponent[]{createButton, deleteButton, updateButton
-                , increaseButton, decreaseButton, backToGroupsButton});
+                , increaseButton, decreaseButton, backToGroupsButton, findProductButton});
         add(buttonPanel, BorderLayout.NORTH);
         add(backToGroupsButton, BorderLayout.SOUTH);
     }
